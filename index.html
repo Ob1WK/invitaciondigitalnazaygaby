@@ -1,0 +1,1829 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naza & Gaby — 7 de Noviembre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f7f3ed;
+    --cream-dark: #ede8df;
+    --olive: #7a8c5e;
+    --olive-dark: #5a6845;
+    --olive-light: #a3b080;
+    --earth: #9c7a5b;
+    --earth-light: #c4a882;
+    --earth-dark: #7a5c40;
+    --charcoal: #2d2d2a;
+    --text-light: #6b6860;
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    overflow-x: hidden;
+  }
+
+  /* ─────────────── ENVELOPE SCREEN ─────────────── */
+  #envelope-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--cream);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+
+  #envelope-screen.fade-out {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .envelope-hint {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 3rem;
+    animation: float-in 1.2s ease forwards;
+    opacity: 0;
+    animation-delay: 0.8s;
+  }
+
+  /* ─── SVG Envelope ─── */
+  .envelope-wrapper {
+    cursor: pointer;
+    animation: float-in 1s ease forwards;
+    opacity: 0;
+    animation-delay: 0.2s;
+    position: relative;
+  }
+
+  .envelope-wrapper:hover .env-shadow {
+    transform: translateX(-50%) scaleX(0.85);
+    opacity: 0.18;
+  }
+
+  .env-shadow {
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0.75);
+    width: 280px;
+    height: 18px;
+    background: var(--earth);
+    border-radius: 50%;
+    opacity: 0.1;
+    filter: blur(10px);
+    transition: all 0.4s ease;
+    pointer-events: none;
+  }
+
+  .envelope-svg {
+    width: 300px;
+    display: block;
+    filter: drop-shadow(0 8px 28px rgba(100,80,55,0.18));
+    transition: transform 0.3s ease, filter 0.3s ease;
+  }
+
+  .envelope-wrapper:hover .envelope-svg {
+    transform: translateY(-5px);
+    filter: drop-shadow(0 18px 36px rgba(100,80,55,0.24));
+  }
+
+  /*
+   * The flap is a separate SVG element that rotates around its TOP edge.
+   * We use a CSS transform with a fixed transform-origin in SVG user-units
+   * by wrapping it in a <g> and setting transform-box + transform-origin.
+   */
+  .env-flap {
+    transform-box: fill-box;
+    transform-origin: center top;   /* rotate from the top edge of the flap */
+    transform-style: preserve-3d;
+  }
+
+  /* On hover: hint — slightly lifts the flap */
+  .envelope-wrapper:hover .env-flap {
+    transform: rotateX(-15deg);
+    transition: transform 0.3s ease;
+  }
+
+  /* On opening: flap rotates fully open (180° = folds back behind the envelope) */
+  .envelope-wrapper.opening .env-flap {
+    animation: flap-open 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes flap-open {
+    0%   { transform: rotateX(0deg);    }
+    100% { transform: rotateX(-180deg); }
+  }
+
+  /* Whole envelope gently rises after flap opens, then fades via the screen overlay */
+  .envelope-wrapper.opening .envelope-svg {
+    animation: env-rise 0.5s ease 0.55s forwards;
+  }
+
+  @keyframes env-rise {
+    0%   { transform: translateY(0);   }
+    100% { transform: translateY(-12px); }
+  }
+
+  @keyframes float-in {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* White flash overlay */
+  #white-flash {
+    position: fixed;
+    inset: 0;
+    background: white;
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+  }
+
+  #white-flash.flash-in {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ─────────────── MAIN INVITATION ─────────────── */
+  #invitation {
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    min-height: 100vh;
+  }
+
+  #invitation.visible {
+    opacity: 1;
+  }
+
+  /* ─── SECTION: Versículo ─── */
+  .section-verse {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-verse::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(163,176,128,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .section-verse::after {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    left: -80px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(196,168,130,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .verse-ornament {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 5rem;
+    color: var(--olive-light);
+    opacity: 0.3;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+  }
+
+  .verse-ref {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--olive);
+    margin-bottom: 2rem;
+  }
+
+  .verse-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+    line-height: 1.8;
+    color: var(--charcoal);
+    max-width: 560px;
+    text-align: center;
+    font-weight: 300;
+  }
+
+  .verse-divider {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--olive-light), transparent);
+    margin: 2.5rem auto 0;
+  }
+
+  /* ─── SECTION: Hero ─── */
+  .section-hero {
+    padding: 6rem 2rem 4rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .hero-label {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.72rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-names {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 10vw, 7rem);
+    font-weight: 300;
+    color: var(--charcoal);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-names .ampersand {
+    color: var(--olive);
+    font-style: italic;
+    font-size: 0.85em;
+  }
+
+  .hero-date {
+    margin-top: 1.5rem;
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.85rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--earth);
+  }
+
+  .hero-date-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1rem, 3vw, 1.4rem);
+    font-weight: 400;
+    color: var(--charcoal);
+    letter-spacing: 0.08em;
+    margin-top: 0.4rem;
+  }
+
+  .leaf-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 3rem auto;
+    max-width: 300px;
+  }
+
+  .leaf-divider::before, .leaf-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--earth-light));
+  }
+  .leaf-divider::after {
+    background: linear-gradient(to left, transparent, var(--earth-light));
+  }
+
+  .leaf-icon {
+    color: var(--olive);
+    font-size: 1rem;
+    opacity: 0.7;
+  }
+
+  /* ─── GUEST SECTION ─── */
+  .section-guest {
+    padding: 0 2rem 4rem;
+    text-align: center;
+  }
+
+  .guest-card {
+    display: inline-block;
+    background: white;
+    border: 1px solid var(--cream-dark);
+    border-radius: 2px;
+    padding: 1.8rem 3rem;
+    position: relative;
+  }
+
+  .guest-card::before {
+    content: '';
+    position: absolute;
+    top: 6px; left: 6px; right: -6px; bottom: -6px;
+    border: 1px solid var(--olive-light);
+    border-radius: 2px;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .guest-label {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 0.6rem;
+  }
+
+  .guest-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.3rem, 4vw, 1.8rem);
+    font-weight: 400;
+    color: var(--charcoal);
+    font-style: italic;
+  }
+
+  .guest-pax {
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 0.78rem;
+    color: var(--olive);
+    letter-spacing: 0.1em;
+    margin-top: 0.4rem;
+  }
+
+  /* ─── COUNTDOWN ─── */
+  .section-countdown {
+    padding: 5rem 2rem;
+    text-align: center;
+    background: var(--charcoal);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-countdown::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 20% 50%, rgba(122,140,94,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 50%, rgba(156,122,91,0.12) 0%, transparent 60%);
+  }
+
+  .countdown-label {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--olive-light);
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .countdown-grid {
+    display: flex;
+    justify-content: center;
+    gap: clamp(1rem, 4vw, 3rem);
+    flex-wrap: wrap;
+    position: relative;
+  }
+
+  .countdown-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 70px;
+  }
+
+  .countdown-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .countdown-number.pulse {
+    animation: num-pulse 0.4s ease;
+  }
+
+  @keyframes num-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); color: var(--earth-light); }
+    100% { transform: scale(1); }
+  }
+
+  .countdown-unit {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--olive-light);
+    margin-top: 0.3rem;
+    opacity: 0.7;
+  }
+
+  .countdown-sep {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    color: var(--olive);
+    opacity: 0.4;
+    align-self: flex-start;
+    padding-top: 0.2rem;
+    line-height: 1;
+  }
+
+  /* ─── LOCATION ─── */
+  .section-location {
+    padding: 6rem 2rem;
+    text-align: center;
+  }
+
+  .section-title {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+  }
+
+  .section-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 300;
+    color: var(--charcoal);
+    margin-bottom: 2.5rem;
+  }
+
+  .map-container {
+    max-width: 700px;
+    margin: 0 auto;
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+    position: relative;
+  }
+
+  .map-container iframe {
+    width: 100%;
+    height: 380px;
+    border: none;
+    display: block;
+  }
+
+  .map-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+    padding: 0.8rem 2rem;
+    border: 1px solid var(--olive);
+    color: var(--olive-dark);
+    text-decoration: none;
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-radius: 1px;
+    transition: all 0.3s ease;
+  }
+
+  .map-btn:hover {
+    background: var(--olive);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(90,104,69,0.25);
+  }
+
+  /* ─── TIMELINE ─── */
+  .section-timeline {
+    padding: 6rem 2rem;
+    background: linear-gradient(to bottom, var(--cream-dark), var(--cream));
+  }
+
+  .timeline-container {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .timeline-inner {
+    position: relative;
+    padding-left: 2.5rem;
+  }
+
+  .timeline-inner::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--olive-light), var(--earth-light), transparent);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding: 0 0 2.5rem 1.5rem;
+  }
+
+  .timeline-item:last-child {
+    padding-bottom: 0;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: -2.5rem;
+    top: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--olive);
+    border: 2px solid var(--cream);
+    box-shadow: 0 0 0 2px var(--olive-light);
+    transform: translateX(50%);
+  }
+
+  .timeline-time {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--earth);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .timeline-event {
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    color: var(--charcoal);
+  }
+
+  .timeline-sub {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.72rem;
+    color: var(--text-light);
+    margin-top: 0.2rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── DRESSCODE ─── */
+  .section-dresscode {
+    padding: 6rem 2rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .dresscode-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    opacity: 0.6;
+  }
+
+  .dresscode-main {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 300;
+    color: var(--charcoal);
+    font-style: italic;
+    margin-bottom: 0.4rem;
+  }
+
+  .dresscode-subtitle {
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 0.82rem;
+    color: var(--text-light);
+    letter-spacing: 0.08em;
+    margin-bottom: 2.5rem;
+  }
+
+  .dresscode-swatches {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+
+  .dresscode-swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .dresscode-swatch-circle {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+    position: relative;
+  }
+
+  .dresscode-swatch-label {
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: var(--text-light);
+    text-transform: capitalize;
+  }
+
+  /* White swatch gets a dashed border and "novia" note */
+  .dresscode-swatch.swatch-white .dresscode-swatch-circle {
+    border: 1.5px dashed #c8bfb0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .swatch-note {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.6rem;
+    letter-spacing: 0.05em;
+    color: var(--earth);
+    font-style: italic;
+    margin-top: -0.3rem;
+    max-width: 72px;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  /* Dresscode bottom notes */
+  .dresscode-notes {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .dresscode-note-white {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--charcoal);
+  }
+
+  .swatch-circle-inline {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  .dresscode-note-avoid {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    color: var(--text-light);
+    margin-top: 0.2rem;
+  }
+
+  /* ─── GIFTS ─── */
+  .section-gifts {
+    padding: 6rem 2rem;
+    background: var(--cream-dark);
+    text-align: center;
+  }
+
+  .gifts-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--charcoal);
+    max-width: 520px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.8;
+  }
+
+  .bank-card {
+    background: white;
+    border: 1px solid var(--cream-dark);
+    border-radius: 2px;
+    padding: 1.5rem 2.5rem;
+    max-width: 380px;
+    margin: 0 auto 2rem;
+    text-align: left;
+    position: relative;
+  }
+
+  .bank-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(to right, var(--olive-light), var(--earth-light));
+  }
+
+  .bank-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+
+  .bank-row:last-child { border-bottom: none; }
+
+  .bank-key {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+
+  .bank-val {
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 0.82rem;
+    color: var(--charcoal);
+  }
+
+  .copy-btn {
+    background: none;
+    border: 1px solid var(--cream-dark);
+    border-radius: 1px;
+    padding: 0.15rem 0.4rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+  }
+  .copy-btn:hover { border-color: var(--olive); color: var(--olive); }
+  .copy-btn.copied { color: var(--olive); border-color: var(--olive); }
+
+  .gift-list-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem 2.5rem;
+    background: var(--charcoal);
+    color: var(--cream);
+    border: none;
+    cursor: pointer;
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-radius: 1px;
+    transition: all 0.3s ease;
+  }
+
+  .gift-list-btn:hover {
+    background: var(--olive-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  }
+
+  /* ─── GIFT MODAL ─── */
+  #gift-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    background: var(--cream);
+    overflow-y: auto;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(30px);
+    transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  #gift-modal.open {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+  }
+
+  .modal-header {
+    position: sticky;
+    top: 0;
+    background: var(--cream);
+    border-bottom: 1px solid var(--cream-dark);
+    padding: 1.2rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1;
+  }
+
+  .modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: var(--charcoal);
+  }
+
+  .modal-close {
+    background: none;
+    border: 1px solid var(--cream-dark);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .modal-close:hover { border-color: var(--charcoal); color: var(--charcoal); }
+
+  .modal-body {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  .gifts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .gift-card {
+    background: white;
+    border: 1px solid var(--cream-dark);
+    border-radius: 2px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .gift-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  }
+
+  .gift-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    background: var(--cream-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+  }
+
+  .gift-info {
+    padding: 1.2rem;
+  }
+
+  .gift-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--charcoal);
+    margin-bottom: 0.3rem;
+  }
+
+  .gift-desc {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.72rem;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+
+  .gift-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    background: var(--olive);
+    color: white;
+    text-decoration: none;
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-radius: 1px;
+    transition: all 0.2s;
+  }
+  .gift-link:hover { background: var(--olive-dark); }
+
+  .gift-link-disabled {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: var(--cream-dark);
+    color: var(--text-light);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-radius: 1px;
+    font-style: italic;
+  }
+
+  /* RSVP deadline notice */
+  .rsvp-deadline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f0ece5;
+    border: 1px solid var(--earth-light);
+    border-left: 3px solid var(--olive);
+    border-radius: 2px;
+    padding: 0.65rem 1.2rem;
+    margin-bottom: 2rem;
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 0.8rem;
+    color: var(--charcoal);
+    letter-spacing: 0.02em;
+  }
+
+  .rsvp-deadline strong {
+    font-weight: 400;
+    color: var(--olive-dark);
+  }
+
+  .deadline-icon {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+
+  /* ─── RSVP ─── */
+  .section-rsvp {
+    padding: 6rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-rsvp::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(163,176,128,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .rsvp-form {
+    max-width: 480px;
+    margin: 2rem auto 0;
+    text-align: left;
+  }
+
+  .form-group {
+    margin-bottom: 1.2rem;
+  }
+
+  .form-label {
+    display: block;
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.68rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--cream-dark);
+    border-radius: 1px;
+    background: white;
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 0.85rem;
+    color: var(--charcoal);
+    transition: border-color 0.2s;
+    outline: none;
+    appearance: none;
+  }
+
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--olive);
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 1.1rem;
+    background: var(--olive);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 0.82rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    border-radius: 1px;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .submit-btn:hover:not(:disabled) {
+    background: var(--olive-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(90,104,69,0.3);
+  }
+
+  .submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .submit-btn .btn-loading {
+    display: none;
+  }
+
+  .submit-btn.loading .btn-text { display: none; }
+  .submit-btn.loading .btn-loading { display: inline; }
+
+  /* Success state */
+  .rsvp-success {
+    display: none;
+    text-align: center;
+    padding: 3rem 2rem;
+  }
+
+  .rsvp-success.show { display: block; }
+
+  .success-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .success-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--charcoal);
+    margin-bottom: 0.5rem;
+  }
+
+  .success-sub {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.82rem;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+  }
+
+  .whatsapp-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.9rem 2rem;
+    background: #25D366;
+    color: white;
+    text-decoration: none;
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    border-radius: 1px;
+    transition: all 0.3s;
+  }
+  .whatsapp-btn:hover {
+    background: #1aab53;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(37,211,102,0.3);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 3rem 2rem;
+    text-align: center;
+    border-top: 1px solid var(--cream-dark);
+  }
+
+  .footer-names {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--charcoal);
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-date {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+
+  /* ─── SCROLL ANIMATIONS ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 480px) {
+    .form-row { grid-template-columns: 1fr; }
+    .countdown-sep { display: none; }
+    .bank-card { padding: 1.2rem 1.5rem; }
+    .guest-card { padding: 1.5rem 1.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ ENVELOPE SCREEN ═══ -->
+<div id="envelope-screen">
+  <div class="envelope-hint">Toca para abrir</div>
+  <div class="envelope-wrapper" id="envelopeWrapper" onclick="openEnvelope()">
+    <div class="env-shadow"></div>
+    <!--
+      Clean envelope — no letter inside.
+      Draw order: body → inside-shadow triangles → flap (animates open).
+      The flap <g> uses perspective on parent + rotateX so it folds back realistically.
+    -->
+    <svg class="envelope-svg" viewBox="0 0 300 190" xmlns="http://www.w3.org/2000/svg" style="perspective: 600px;">
+
+      <!-- ── 1. Envelope body (the rectangle) ── -->
+      <rect x="2" y="2" width="296" height="186" rx="4" fill="#e8e0d4" stroke="#c5bbb0" stroke-width="1.2"/>
+
+      <!-- ── 2. Inside: bottom V shadow (visible when open) ── -->
+      <path d="M2 188 L150 118 L298 188 Z" fill="#d4c9bc"/>
+
+      <!-- ── 3. Inside: left and right triangle shadows ── -->
+      <path d="M2 2   L2 188  L150 118 Z" fill="#ddd5ca"/>
+      <path d="M298 2 L298 188 L150 118 Z" fill="#ddd5ca"/>
+
+      <!-- ── 4. Flap — rotates open around its top edge ── -->
+      <g class="env-flap">
+        <!-- Main flap triangle: top-left → tip (pointing down) → top-right -->
+        <path d="M2 2 L150 118 L298 2 Z" fill="#e0d8ce" stroke="#c5bbb0" stroke-width="1"/>
+        <!-- Subtle highlight crease -->
+        <path d="M2 2 L150 114 L298 2" fill="none" stroke="#ece6de" stroke-width="1.5" opacity="0.7"/>
+        <!-- Wax seal at the flap tip -->
+        <circle cx="150" cy="100" r="17" fill="#7a8c5e"/>
+        <circle cx="150" cy="100" r="13.5" fill="none" stroke="#a3b080" stroke-width="1"/>
+        <text x="150" y="105" text-anchor="middle" font-size="11" fill="#f7f3ed"
+              font-family="Georgia,serif" font-style="italic" font-weight="400">N&amp;G</text>
+      </g>
+
+    </svg>
+  </div>
+</div>
+
+<!-- White flash overlay -->
+<div id="white-flash"></div>
+
+<!-- ═══ INVITATION CONTENT ═══ -->
+<div id="invitation">
+
+  <!-- ─── Versículo ─── -->
+  <section class="section-verse">
+    <div class="verse-ornament reveal">"</div>
+    <p class="verse-ref reveal reveal-delay-1">Mateo 19:5–6</p>
+    <p class="verse-text reveal reveal-delay-2">
+      Por esto el hombre dejará a su padre y a su madre,<br>
+      y se unirá a su mujer, y los dos serán una sola carne.<br>
+      Así que ya no son dos, sino una sola carne;<br>
+      por tanto, lo que Dios juntó, no lo separe el hombre.
+    </p>
+    <div class="verse-divider reveal reveal-delay-3"></div>
+  </section>
+
+  <!-- ─── Hero ─── -->
+  <section class="section-hero">
+    <p class="hero-label reveal">Nos casamos</p>
+    <h1 class="hero-names reveal reveal-delay-1">
+      Naza <span class="ampersand">&</span> Gaby
+    </h1>
+    <div class="leaf-divider reveal reveal-delay-2">
+      <span class="leaf-icon">✦</span>
+    </div>
+    <p class="hero-date reveal reveal-delay-3">Viernes</p>
+    <p class="hero-date-number reveal reveal-delay-4">7 de Noviembre · 2026</p>
+  </section>
+
+  <!-- ─── Guest ─── -->
+  <section class="section-guest">
+    <div class="guest-card reveal" id="guestCard">
+      <p class="guest-label">Invitación especial para</p>
+      <p class="guest-name" id="guestName">Querido Invitado</p>
+      <p class="guest-pax" id="guestPax"></p>
+    </div>
+  </section>
+
+  <!-- ─── Countdown ─── -->
+  <section class="section-countdown">
+    <p class="countdown-label">Faltan</p>
+    <div class="countdown-grid">
+      <div class="countdown-item">
+        <span class="countdown-number" id="cd-days">00</span>
+        <span class="countdown-unit">Días</span>
+      </div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-item">
+        <span class="countdown-number" id="cd-hours">00</span>
+        <span class="countdown-unit">Horas</span>
+      </div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-item">
+        <span class="countdown-number" id="cd-mins">00</span>
+        <span class="countdown-unit">Min</span>
+      </div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-item">
+        <span class="countdown-number" id="cd-secs">00</span>
+        <span class="countdown-unit">Seg</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Location ─── -->
+  <section class="section-location">
+    <p class="section-title reveal">Dónde celebramos</p>
+    <h2 class="section-heading reveal reveal-delay-1">Lugar del Evento</h2>
+    <div class="map-container reveal reveal-delay-2">
+      <iframe
+        src="https://maps.google.com/maps?q=-34.593361,-58.774528&z=16&output=embed"
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="Lugar de la boda">
+      </iframe>
+    </div>
+    <a href="https://maps.app.goo.gl/3PhnxqUBsiw52efz8" target="_blank" class="map-btn reveal reveal-delay-3">
+      <span>↗</span> Abrir en Google Maps
+    </a>
+  </section>
+
+  <!-- ─── Timeline ─── -->
+  <section class="section-timeline">
+    <div class="timeline-container">
+      <p class="section-title reveal" style="text-align:center">El gran día</p>
+      <h2 class="section-heading reveal reveal-delay-1" style="text-align:center;margin-bottom:3rem">Itinerario</h2>
+      <div class="timeline-inner">
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <p class="timeline-time">15:30</p>
+          <p class="timeline-event">Ingreso de los invitados</p>
+          <p class="timeline-sub">Bienvenida y recepción</p>
+        </div>
+        <div class="timeline-item reveal reveal-delay-1">
+          <div class="timeline-dot"></div>
+          <p class="timeline-time">16:00</p>
+          <p class="timeline-event">Ceremonia</p>
+          <p class="timeline-sub">El momento más especial</p>
+        </div>
+        <div class="timeline-item reveal reveal-delay-2">
+          <div class="timeline-dot"></div>
+          <p class="timeline-time">16:30</p>
+          <p class="timeline-event">Merienda & Fotos</p>
+          <p class="timeline-sub">Compartir y celebrar juntos</p>
+        </div>
+        <div class="timeline-item reveal reveal-delay-3">
+          <div class="timeline-dot"></div>
+          <p class="timeline-time">19:30</p>
+          <p class="timeline-event">Cierre</p>
+          <p class="timeline-sub">Hasta pronto 🌿</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Dress Code ─── -->
+  <section class="section-dresscode">
+    <p class="section-title reveal">Vestimenta</p>
+    <h2 class="section-heading reveal reveal-delay-1">Dress Code</h2>
+
+    <p class="dresscode-main reveal reveal-delay-2">Elegante Sport</p>
+    <p class="dresscode-subtitle reveal reveal-delay-3">Tonos tierra &amp; verde</p>
+
+    <div class="dresscode-swatches reveal reveal-delay-4">
+
+      <div class="dresscode-swatch">
+        <div class="dresscode-swatch-circle" style="background:#5a6e3a;"></div>
+        <span class="dresscode-swatch-label">Oliva</span>
+      </div>
+
+      <div class="dresscode-swatch">
+        <div class="dresscode-swatch-circle" style="background:#e8e4d8; border:1px solid #d8d2c4;"></div>
+        <span class="dresscode-swatch-label">Beige</span>
+      </div>
+
+      <div class="dresscode-swatch">
+        <div class="dresscode-swatch-circle" style="background:#1e1e1e;"></div>
+        <span class="dresscode-swatch-label">Negro</span>
+      </div>
+
+      <div class="dresscode-swatch">
+        <div class="dresscode-swatch-circle" style="background:#c4b99a;"></div>
+        <span class="dresscode-swatch-label">Arena</span>
+      </div>
+
+      <div class="dresscode-swatch swatch-white">
+        <div class="dresscode-swatch-circle" style="background:#ffffff;"></div>
+        <span class="dresscode-swatch-label">Blanco</span>
+        <span class="swatch-note">Solo la novia en mujeres</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── Mesa de Regalos ─── -->
+  <section class="section-gifts">
+    <p class="section-title reveal">Mesa de regalos</p>
+    <h2 class="section-heading reveal reveal-delay-1">Con todo nuestro amor</h2>
+    <p class="gifts-text reveal reveal-delay-2">
+      Tu presencia es nuestro mayor regalo. Sin embargo, si deseás ayudarnos a construir nuestro nuevo hogar, podés hacerlo de la siguiente manera:
+    </p>
+
+    <div class="bank-card reveal reveal-delay-3">
+      <div class="bank-row">
+        <span class="bank-key">Titular</span>
+        <span class="bank-val">Naza y Gaby</span>
+      </div>
+      <div class="bank-row">
+        <span class="bank-key">Alias</span>
+        <span class="bank-val" id="alias-val">nazaygaby.hogar</span>
+        <button class="copy-btn" onclick="copyText('alias-val', this)">copiar</button>
+      </div>
+      <div class="bank-row">
+        <span class="bank-key">CBU</span>
+        <span class="bank-val" id="cbu-val">0000003100012345678901</span>
+        <button class="copy-btn" onclick="copyText('cbu-val', this)">copiar</button>
+      </div>
+    </div>
+
+    <button class="gift-list-btn reveal reveal-delay-4" onclick="openGiftModal()">
+      <span>🎁</span> Ver lista de regalos
+    </button>
+  </section>
+
+  <!-- ─── RSVP ─── -->
+  <section class="section-rsvp">
+    <p class="section-title reveal">¿Nos acompañás?</p>
+    <h2 class="section-heading reveal reveal-delay-1">Confirmá tu asistencia</h2>
+    <div class="rsvp-deadline reveal reveal-delay-2">
+      <span class="deadline-icon">📅</span>
+      <span>Confirmá antes del <strong>1 de mayo de 2026</strong></span>
+    </div>
+
+    <div id="rsvp-form-container" class="rsvp-form">
+      <form id="rsvp-form" onsubmit="submitRSVP(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nombre</label>
+            <input type="text" class="form-input" id="rsvp-name" placeholder="Tu nombre" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Apellido</label>
+            <input type="text" class="form-input" id="rsvp-lastname" placeholder="Tu apellido" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">¿Asistís?</label>
+          <select class="form-select" id="rsvp-attendance" required>
+            <option value="">Seleccioná</option>
+            <option value="Si">✓ Sí, voy a estar</option>
+            <option value="No">✗ No voy a poder</option>
+          </select>
+        </div>
+        <div class="form-group" id="pax-group" style="display:none">
+          <label class="form-label">Cantidad de personas</label>
+          <select class="form-select" id="rsvp-pax">
+            <option value="1">1 persona</option>
+            <option value="2">2 personas</option>
+            <option value="3">3 personas</option>
+            <option value="4">4 personas</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mensaje (opcional)</label>
+          <textarea class="form-textarea" id="rsvp-msg" placeholder="¡Un mensajito para los novios!"></textarea>
+        </div>
+        <button type="submit" class="submit-btn" id="submit-btn">
+          <span class="btn-text">Confirmar asistencia</span>
+          <span class="btn-loading">Enviando…</span>
+        </button>
+        <p id="form-error" style="color:#c0392b;font-size:0.75rem;margin-top:0.8rem;font-family:'Jost',sans-serif;font-weight:200;display:none;text-align:center;"></p>
+      </form>
+    </div>
+
+    <div class="rsvp-success" id="rsvp-success">
+      <div class="success-icon">🌿</div>
+      <h3 class="success-title">¡Gracias!</h3>
+      <p class="success-sub">Se abrió WhatsApp con tu confirmación. Si no se abrió automáticamente, tocá el botón.</p>
+      <a id="whatsapp-btn" href="#" target="_blank" class="whatsapp-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Avisar por WhatsApp
+      </a>
+    </div>
+  </section>
+
+  <!-- ─── Footer ─── -->
+  <footer>
+    <p class="footer-names">Naza & Gaby</p>
+    <p class="footer-date">7 · XI · 2026</p>
+  </footer>
+
+</div><!-- /invitation -->
+
+<!-- ═══ GIFT MODAL ═══ -->
+<div id="gift-modal">
+  <div class="modal-header">
+    <h2 class="modal-title">Lista de Regalos</h2>
+    <button class="modal-close" onclick="closeGiftModal()">✕</button>
+  </div>
+  <div class="modal-body">
+    <div class="gifts-grid" id="gifts-grid">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════
+//  CONFIGURACIÓN — EDITAR AQUÍ
+// ═══════════════════════════════════
+const CONFIG = {
+  // ─── CONFIGURACIÓN ───────────────────────────────────────
+  weddingDate: new Date(2026, 10, 7, 15, 30, 0),  // 7 noviembre 2026 15:30hs
+
+  // Google Apps Script Web App URL (configurar después)
+  SHEETS_URL: 'TU_GOOGLE_APPS_SCRIPT_URL_AQUI',
+
+  // WhatsApp número (sin + ni espacios, código de país incluido)
+  WA_NUMBER: '541169724950',
+
+  // Alias / CBU (reemplazar con los reales)
+  ALIAS: 'nazaygaby.hogar',
+  CBU:   '0000003100012345678901',
+};
+
+// ═══════════════════════════════════
+//  LISTA DE REGALOS (datos de prueba)
+// ═══════════════════════════════════
+const GIFTS = [
+  { emoji: '🛏️', name: 'Cama box con cajonera', desc: 'Un diseño en blanco y madera para un descanso perfecto en nuestra nueva habitación.', link: 'https://www.fravega.com/p/cama-box-c160-blanca-centro-estant-22715855/' },
+  { emoji: '💤', name: 'Colchón 2 plazas', desc: 'El complemento ideal de espuma para soñar a lo grande.', link: 'https://www.fravega.com/p/colchon-calm-2-plazas-140x190-caja-2-capas-de-espuma--21206156/' },
+  { emoji: '♨️', name: 'Microondas negro', desc: 'Para calentar nuestras comidas de todos los días con mucho estilo.', link: 'https://www.fravega.com/p/microondas-enova-me2311-23-litros-negro-22617292/' },
+  { emoji: '🧺', name: 'Lavarropas negro', desc: 'Un aliado fundamental para mantener todo impecable en casa.', link: 'https://www.fravega.com/p/lavarropas-philco-predicta-phlf8014pi2-carga-frontal-inverter-8kg-170541/' },
+  { emoji: '🧂', name: 'Especiero giratorio', desc: 'Para darle el condimento exacto a nuestras mejores recetas.', link: 'https://www.fravega.com/p/especiero-cuadrado-de-acero-inox-12-frascos-base-giratoria-990275921/' },
+  { emoji: '🥣', name: 'Mixer negro', desc: 'Súper práctico para sopas, salsas y preparaciones rápidas.', link: 'https://www.fravega.com/p/minipimer-mixer-completa-c-batidor-y-procesador-color-negro-22470769/' },
+  { emoji: '🥤', name: 'Licuadora personal', desc: 'Ideal para prepararnos licuados y batidos mañaneros.', link: 'https://www.fravega.com/p/licuadora-personal-tivoli-600ml-250w-botella-portatil-tapa-22493877/' },
+  { emoji: '🍷', name: 'Vasos copones', desc: 'Para brindar y celebrar con familia y amigos.', link: 'https://www.fravega.com/p/set-x-12-copas-copon-vaso-vidrio-sin-tallo-gourmet-rigolleau-990156381/' },
+  { emoji: '🛏️', name: 'Juego de sábanas', desc: 'Suavidad y confort color blanco para vestir nuestra cama.', link: 'https://www.fravega.com/p/juego-completo-sabanas-2-plazas-microfibra-ideal-hotel-hogar-color-blanco-20141160/' },
+  { emoji: '🤎', name: 'Cubrecama edredón', desc: 'En tono marrón para darle calidez y textura a nuestro dormitorio.', link: '' },
+  { emoji: '🪑', name: 'Mesita de luz', desc: 'El detalle perfecto en blanco y madera para el lado de la cama.', link: 'https://www.fravega.com/p/mesa-de-luz-flotante-blanco-desayunador-cajon-moderno-21280914/' },
+  { emoji: '🛁', name: 'Set de toallas y toallones', desc: 'Para equipar nuestro baño con los colores que nos gustan.', link: 'https://www.fravega.com/p/juego-de-toallas-franco-valente-algodon-580-gs-negro-661318/' },
+  { emoji: '🧊', name: 'Hielera', desc: 'Infaltable para mantener bien frías las bebidas en las juntadas.', link: '' },
+  { emoji: '🍽️', name: 'Secaplatos negro', desc: 'Diseño moderno y mucha practicidad para la mesada.', link: 'https://www.fravega.com/p/secaplatos-escurridor-nictom-ep01-negro-acero-20015107/' },
+  { emoji: '🧀', name: 'Rallador símil madera', desc: 'Un infaltable de cocina pero con un toque natural hermoso.', link: 'https://www.fravega.com/p/rallador-20-cm-acero-inoxidable-simil-madera-etxe-ad-09--21479482/' },
+  { emoji: '🥔', name: 'Pelapapas de madera', desc: 'Práctico y con ese estilo rústico que nos encanta.', link: '' },
+  { emoji: '🛋️', name: 'Sillón en L gris', desc: 'El rincón oficial que nos espera para nuestras maratones de series.', link: 'https://www.fravega.com/p/sillon-de-3-cuerpos-esquinero-convertible-american-wood-chenille-gris-50000857/' },
+  { emoji: '🪑', name: 'Sillas de madera', desc: 'Diseño nórdico súper cómodo para compartir largas charlas en la mesa.', link: 'https://www.fravega.com/p/sillas-milan-nordicas-madera-diseno-moderno-negro-x4-negro-21188779/' },
+  { emoji: '🧼', name: 'Set de baño', desc: 'Accesorios en negro y marrón que suman muchísimo estilo.', link: 'https://www.fravega.com/p/set-de-bano-con-accesorios-6-pzas-negro-22485943/' },
+  { emoji: '🚿', name: 'Cortina de baño', desc: 'Un diseño laberinto en tonos marrones para decorar el baño.', link: 'https://www.fravega.com/p/cortina-de-bano-decorativa-180x180-impermeable-con-ganchos-bnb-55100-laberinto-22658951/' },
+  { emoji: '🗑️', name: 'Set de tachos de metal', desc: 'Combos a pedal para mantener el orden y la limpieza a raya.', link: 'https://www.fravega.com/p/tacho-de-basura-pedal-nictom-30-lts-color-acero-21190996/' },
+  { emoji: '🍳', name: 'Batería de cocina', desc: 'Todo lo necesario en color gris oscuro para inspirarnos cocinando juntos.', link: 'https://www.fravega.com/p/bateria-de-cocina-tramontina-turim-11-piezas-starflon-max-990053890/' },
+  { emoji: '🥄', name: 'Utensilios de silicona', desc: 'Herramientas ideales para cocinar sin rayar nuestras ollas nuevas.', link: 'https://www.fravega.com/p/set-utensillos-x-12-pzas-22626171/' },
+  { emoji: '🔪', name: 'Cuchilla de chef', desc: 'Para cortar y preparar ingredientes como verdaderos profesionales.', link: 'https://www.fravega.com/p/cuchillo-de-cocina-cheff-centurion-20-cm-21218653/' },
+  { emoji: '🫙', name: 'Set de frascos herméticos', desc: 'Para organizar la alacena y que quede tan linda como funcional.', link: 'https://www.fravega.com/p/set-de-frascos-de-vidrio-fravega-home-x3-661396/' },
+  { emoji: '🪵', name: 'Tabla de bambú', desc: 'Noble y estética, tanto para picar como para presentar picadas.', link: 'https://www.fravega.com/p/tabla-de-picar-cortar-rectangular-24x34cm-bamboo-cocina-bnb-53477-22658196/' },
+  { emoji: '🗃️', name: 'Organizador de cajones', desc: 'La clave absoluta para mantener nuestro placard impecable.', link: 'https://www.fravega.com/p/organizador-de-cajones-interior-plegable-dehuka-22481627/' },
+  { emoji: '👕', name: 'Tender plegable', desc: 'El clásico vertical con rueditas, infaltable para el día a día.', link: 'https://www.fravega.com/p/tender-plegable-vertical-varillas-con-broches-ruedas-ropa-colgador-tendedero-de-pie-alas-21917640/' },
+  { emoji: '💡', name: 'Lámpara de mimbre', desc: 'Portátil y solar, para crear una iluminación súper cálida.', link: 'https://www.fravega.com/p/lampara-usb-solar-portatil-led-2-5w-madera-670326/' },
+  { emoji: '📺', name: 'Smart TV 43"', desc: 'Para nuestras noches de películas y obvio, para no perdernos ningún partido de River.', link: 'https://www.fravega.com/p/smart-tv-led-43-philips-43pfd6910-77-502789/' },
+  { emoji: '🪔', name: 'Velador nórdico', desc: 'Un toque de luz tenue y diseño trípode para nuestros espacios.', link: 'https://www.fravega.com/p/velador-tripode-nordico--21190619/' },
+  { emoji: '📺', name: 'Rack para TV', desc: 'Un mueble moderno y negro que le da estructura al living.', link: 'https://www.fravega.com/p/rack-tv-mueble-para-televisor-moderno-negro-180-mts-rtv180-22601718/' },
+  { emoji: '🔊', name: 'Barra de sonido', desc: 'Para que el living suene como un verdadero cine en casa.', link: 'https://www.fravega.com/p/barra-de-sonido-tv-soundbar-telefunken-polaris-700-bluetooth-aux-con-subwoofer-c-remoto-21194298/' },
+  { emoji: '❄️', name: 'Aire acondicionado', desc: 'Portátil frío/calor, para estar cómodos en cualquier estación.', link: 'https://www.fravega.com/p/aire-acondicionado-portatil-philco-frio-calor-2200fg-2650w-22709553/' },
+  { emoji: '🪞', name: 'Espejo redondo con luz', desc: 'Ideal para darle amplitud, luz y onda a nuestras paredes.', link: '' },
+  { emoji: '🗄️', name: 'Mueble despensero', desc: 'Blanco y minimalista, porque el espacio de guardado extra siempre viene bien.', link: 'https://www.fravega.com/p/despensero-organizador-1-puerta-centro-estant-g14-blanco-600855/' },
+  { emoji: '📦', name: 'Cajón con rulemanes', desc: 'Un detalle de organización que nos facilita un montón las cosas.', link: '' },
+  { emoji: '🥘', name: 'Olla Essen', desc: 'Un clásico argentino de calidad que nos va a acompañar toda la vida.', link: '' },
+  { emoji: '🧽', name: 'Set de repasadores', desc: 'Detalles lindos que le dan vida y color a la cocina.', link: 'https://www.fravega.com/p/repasador-stitch-vibes-22708080/' },
+  { emoji: '🧹', name: 'Escoba y pala', desc: 'Los guerreros infaltables para mantener la casa brillando.', link: 'https://www.fravega.com/p/juego-de-escoba-y-pala-plegable-ahorra-espacio-21454504/' },
+  { emoji: '🧹', name: 'Pala alta', desc: 'Súper cómoda para limpiar los pisos sin esfuerzo.', link: 'https://www.fravega.com/p/juego-de-escoba-y-pala-plegable-ahorra-espacio-21454504/' },
+  { emoji: '🧽', name: 'Set de trapos', desc: 'Básicos e indispensables para la limpieza de todas las superficies.', link: '' },
+  { emoji: '🪣', name: 'Mopa con balde escurridor', desc: 'Para lavar los pisos de forma rápida, limpia y muy práctica.', link: 'https://www.fravega.com/p/mopa-trapeador-balde-escurridor-limpia-piso-ventanas-22699619/' },
+  { emoji: '🍽️', name: 'Platos de cerámica', desc: 'Vajilla hermosa de borde fino para lucirnos en nuestras comidas.', link: 'https://www.fravega.com/p/set-crmk-platos-ceramica-12-pz-borde-fino-playo-postre-hondo-22555194/' },
+  { emoji: '🍰', name: 'Platos de postre', desc: 'Ideales para las porciones dulces que nunca nos pueden faltar.', link: 'https://www.fravega.com/p/set-crmk-platos-ceramica-12-pz-borde-fino-playo-postre-hondo-22555194/' },
+  { emoji: '🥣', name: 'Bowls de cerámica', desc: 'Ideales para empezar la mañana con cereales o para sumar a la picada.', link: '' },
+  { emoji: '🍨', name: 'Compoteras de cerámica', desc: 'Para servir los postres o salsitas de la manera más estética.', link: '' },
+  { emoji: '🧺', name: 'Cesto de mimbre', desc: 'Un canasto de bambú para mantener el diseño natural hasta en el lavadero.', link: 'https://www.fravega.com/p/canasto-rectangular-laundry-plegable-cesto-ropa-bambu-tapa-22718859/' },
+  { emoji: '💨', name: 'Ventilador de pie', desc: 'El salvavidas total y absoluto para los días de verano.', link: 'https://www.fravega.com/p/ventilador-de-pie-telefunken-tfk-18pie-18-negro-390426/' },
+  { emoji: '🌈', name: 'Luz LED inteligente', desc: 'Barra magnética para darle distintas atmósferas y colores a nuestro setup.', link: 'https://www.fravega.com/p/barra-de-luz-led-magnetica-30cm-recargable-dinax-22699221/' },
+  { emoji: '🍲', name: 'Fuente de vidrio', desc: 'Un set de asaderas de vidrio templado, perfectas para las comidas al horno.', link: 'https://www.fravega.com/p/set-x4-marinex-asadera-fuentes-clasicas-vidrio-templado-21500185/' },
+  { emoji: '🛌', name: 'Almohadas', desc: 'Esenciales para asegurarnos un buen descanso todas las noches.', link: 'https://www.fravega.com/p/almohada-cannon-platino-80-x-40-21702939/' },
+  { emoji: '🧈', name: 'Mantequera de bambú', desc: 'Con tapa de vidrio, un detalle hermoso para acompañar nuestros desayunos.', link: 'https://www.fravega.com/p/mantequera-bambu-con-tapa-de-vidrio-sakura-22614672/' },
+  { emoji: '⚙️', name: 'Procesadora de alimentos', desc: 'Para facilitarnos la vida picando y mezclando ingredientes en segundos.', link: 'https://www.fravega.com/p/minipimer-mixer-completa-c-batidor-y-procesador-color-negro-22470769/' },
+  { emoji: '🌪️', name: 'Aspiradora vertical', desc: 'Súper ágil, para mantener los pisos impecables sin complicarnos.', link: 'https://www.fravega.com/p/aspiradora-philco-stick-vertical-2-1-hvcph177pi--60288/' },
+  { emoji: '🥐', name: 'Bandejas de horno', desc: 'Asaderas enlozadas ideales para hornear desde pizzas hasta budines.', link: 'https://www.fravega.com/p/set-3-asaderas-enlozada-rectangular-jovifel-21402230/' },
+  { emoji: '🧥', name: 'Perchas de madera', desc: 'Para tener nuestro placard siempre ordenado y muy estético.', link: 'https://www.fravega.com/p/perchas-gadnic-x50-madera-antideslizante-990251534/' },
+];
+
+// ═══════════════════════════════════
+//  LECTURA DE URL PARAMS
+// ═══════════════════════════════════
+function getURLParams() {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    names: params.get('nombres') || null,
+    pax:   parseInt(params.get('pax')) || null,
+  };
+}
+
+function setupGuestSection() {
+  const { names, pax } = getURLParams();
+  const nameEl = document.getElementById('guestName');
+  const paxEl  = document.getElementById('guestPax');
+
+  if (names) {
+    nameEl.textContent = decodeURIComponent(names);
+  }
+
+  if (pax) {
+    paxEl.textContent = `Invitación válida para ${pax} ${pax === 1 ? 'persona' : 'personas'}`;
+    // Pre-fill RSVP pax
+    const paxSelect = document.getElementById('rsvp-pax');
+    if (paxSelect) paxSelect.value = Math.min(pax, 4);
+  }
+
+  if (!names && !pax) {
+    document.getElementById('guestCard').style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════
+//  ENVELOPE ANIMATION
+// ═══════════════════════════════════
+function openEnvelope() {
+  const wrapper = document.getElementById('envelopeWrapper');
+  const screen  = document.getElementById('envelope-screen');
+  const flash   = document.getElementById('white-flash');
+  const invite  = document.getElementById('invitation');
+
+  wrapper.classList.add('opening');
+  wrapper.onclick = null; // disable second click
+
+  setTimeout(() => {
+    // Start white flash
+    flash.classList.add('flash-in');
+  }, 900);
+
+  setTimeout(() => {
+    // Hide envelope, show invitation
+    screen.classList.add('fade-out');
+    invite.classList.add('visible');
+    window.scrollTo(0, 0);
+  }, 1400);
+
+  setTimeout(() => {
+    // Remove flash
+    flash.style.transition = 'opacity 1s ease';
+    flash.classList.remove('flash-in');
+  }, 1700);
+
+  setTimeout(() => {
+    screen.style.display = 'none';
+    flash.style.display = 'none';
+    initReveal(); // start scroll animations
+  }, 2200);
+}
+
+// ═══════════════════════════════════
+//  COUNTDOWN
+// ═══════════════════════════════════
+function updateCountdown() {
+  const now   = new Date();
+  const diff  = CONFIG.weddingDate - now;
+
+  if (diff <= 0) {
+    document.getElementById('cd-days').textContent  = '00';
+    document.getElementById('cd-hours').textContent = '00';
+    document.getElementById('cd-mins').textContent  = '00';
+    document.getElementById('cd-secs').textContent  = '00';
+    return;
+  }
+
+  const days  = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  const mins  = Math.floor((diff % 3600000)  / 60000);
+  const secs  = Math.floor((diff % 60000)    / 1000);
+
+  const fmt = (n) => String(n).padStart(2, '0');
+
+  const setVal = (id, val) => {
+    const el = document.getElementById(id);
+    if (el.textContent !== fmt(val)) {
+      el.classList.remove('pulse');
+      void el.offsetWidth; // reflow
+      el.classList.add('pulse');
+      el.textContent = fmt(val);
+    }
+  };
+
+  setVal('cd-days',  days);
+  setVal('cd-hours', hours);
+  setVal('cd-mins',  mins);
+  setVal('cd-secs',  secs);
+}
+
+// ═══════════════════════════════════
+//  SCROLL REVEAL
+// ═══════════════════════════════════
+function initReveal() {
+  const els = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  els.forEach(el => obs.observe(el));
+}
+
+// ═══════════════════════════════════
+//  COPY TO CLIPBOARD
+// ═══════════════════════════════════
+function copyText(id, btn) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'copiar';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ═══════════════════════════════════
+//  GIFT MODAL
+// ═══════════════════════════════════
+function buildGiftGrid() {
+  const grid = document.getElementById('gifts-grid');
+  grid.innerHTML = GIFTS.map(g => `
+    <div class="gift-card">
+      <div class="gift-img" style="font-size:3.5rem;background:var(--cream-dark);">
+        <span style="line-height:1">${g.emoji}</span>
+      </div>
+      <div class="gift-info">
+        <h3 class="gift-name">${g.name}</h3>
+        <p class="gift-desc">${g.desc}</p>
+        ${g.link
+          ? `<a href="${g.link}" target="_blank" class="gift-link">Ver en tienda →</a>`
+          : `<span class="gift-link-disabled">Próximamente</span>`
+        }
+      </div>
+    </div>
+  `).join('');
+}
+
+function openGiftModal() {
+  document.getElementById('gift-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeGiftModal() {
+  document.getElementById('gift-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ═══════════════════════════════════
+//  RSVP ATTENDANCE TOGGLE
+// ═══════════════════════════════════
+document.getElementById('rsvp-attendance').addEventListener('change', function() {
+  const paxGroup = document.getElementById('pax-group');
+  paxGroup.style.display = this.value === 'Si' ? 'block' : 'none';
+});
+
+// ═══════════════════════════════════
+//  RSVP SUBMIT → WHATSAPP DIRECTO
+// ═══════════════════════════════════
+function submitRSVP(e) {
+  e.preventDefault();
+
+  const name       = document.getElementById('rsvp-name').value.trim();
+  const lastname   = document.getElementById('rsvp-lastname').value.trim();
+  const attendance = document.getElementById('rsvp-attendance').value;
+  const pax        = document.getElementById('rsvp-pax').value;
+  const msg        = document.getElementById('rsvp-msg').value.trim();
+
+  // Armar líneas del mensaje
+  const asistenciaTexto = attendance === 'Si' ? '✅ Sí, voy a estar' : '❌ No voy a poder';
+  const personasLinea   = attendance === 'Si' ? `\n👥 Personas: ${pax}` : '';
+  const mensajeLinea    = msg ? `\n💬 Mensaje: ${msg}` : '';
+
+  const waText = [
+    `¡Hola! Les confirmo mi asistencia a la boda de Naza & Gaby 🌿`,
+    ``,
+    `👤 Nombre: ${name} ${lastname}`,
+    `📋 Asistencia: ${asistenciaTexto}${personasLinea}${mensajeLinea}`,
+  ].join('\n');
+
+  const waUrl = `https://wa.me/${CONFIG.WA_NUMBER}?text=${encodeURIComponent(waText)}`;
+
+  // Mostrar pantalla de éxito
+  document.getElementById('rsvp-form-container').style.display = 'none';
+  const successEl = document.getElementById('rsvp-success');
+  successEl.classList.add('show');
+
+  // Asignar el link al botón y abrir WA automáticamente
+  const waBtn = document.getElementById('whatsapp-btn');
+  waBtn.href = waUrl;
+  window.open(waUrl, '_blank');
+}
+
+// ═══════════════════════════════════
+//  INIT
+// ═══════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  setupGuestSection();
+  buildGiftGrid();
+  // Countdown runs immediately and keeps ticking
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // Populate real bank data
+  document.getElementById('alias-val').textContent = CONFIG.ALIAS;
+  document.getElementById('cbu-val').textContent   = CONFIG.CBU;
+});
+</script>
+</body>
+</html>
