@@ -1200,9 +1200,117 @@
     .bank-card { padding: 1.2rem 1.5rem; }
     .guest-card { padding: 1.5rem 1.8rem; }
   }
+
+  /* ─────────────── MUSIC PLAYER ─────────────── */
+  #music-btn {
+    position: fixed;
+    bottom: 1.8rem;
+    left: 1.8rem;
+    z-index: 500;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--charcoal);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.22);
+    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #music-btn.ready {
+    opacity: 1;
+    pointer-events: all;
+    animation: music-btn-in 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+
+  @keyframes music-btn-in {
+    from { transform: scale(0); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  #music-btn:hover {
+    background: var(--olive-dark);
+    transform: scale(1.1);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.28);
+  }
+
+  #music-btn:active { transform: scale(0.95); }
+
+  /* Animated bars (playing) */
+  .music-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 18px;
+  }
+
+  .music-bars span {
+    display: block;
+    width: 3px;
+    background: var(--cream);
+    border-radius: 2px;
+    animation: bar-bounce 1.1s ease-in-out infinite;
+  }
+
+  .music-bars span:nth-child(1) { height: 8px;  animation-delay: 0s;    }
+  .music-bars span:nth-child(2) { height: 14px; animation-delay: 0.18s; }
+  .music-bars span:nth-child(3) { height: 10px; animation-delay: 0.36s; }
+  .music-bars span:nth-child(4) { height: 16px; animation-delay: 0.12s; }
+
+  @keyframes bar-bounce {
+    0%, 100% { transform: scaleY(0.4); }
+    50%       { transform: scaleY(1);   }
+  }
+
+  /* Muted — bars static and dim */
+  #music-btn.muted .music-bars span {
+    animation: none;
+    transform: scaleY(0.35);
+    opacity: 0.4;
+  }
+
+  /* Tooltip */
+  #music-btn::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--charcoal);
+    color: var(--cream);
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+    padding: 0.35rem 0.75rem;
+    border-radius: 2px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  #music-btn:hover::after { opacity: 1; }
 </style>
 </head>
 <body>
+
+<!-- ═══ BACKGROUND MUSIC ═══ -->
+<audio id="bg-music" loop preload="auto">
+  <source src="musica.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Floating music control -->
+<button id="music-btn" data-tooltip="Silenciar música" onclick="toggleMusic()" aria-label="Controlar música">
+  <div class="music-bars">
+    <span></span><span></span><span></span><span></span>
+  </div>
+</button>
 
 <!-- ═══ ENVELOPE SCREEN ═══ -->
 <div id="envelope-screen">
@@ -1271,7 +1379,7 @@
     <div class="leaf-divider reveal reveal-delay-2">
       <span class="leaf-icon">✦</span>
     </div>
-    <p class="hero-date reveal reveal-delay-3">Sabado</p>
+    <p class="hero-date reveal reveal-delay-3">Viernes</p>
     <p class="hero-date-number reveal reveal-delay-4">7 de Noviembre · 2026</p>
   </section>
 
@@ -1416,7 +1524,7 @@
       </div>
       <div class="bank-row">
         <span class="bank-key">Alias</span>
-        <span class="bank-val" id="alias-val">nazaygaby.hogar</span>
+        <span class="bank-val" id="alias-val">nazaygaby.boda</span>
         <button class="copy-btn" onclick="copyText('alias-val', this)">copiar</button>
       </div>
       <div class="bank-row">
@@ -1467,8 +1575,6 @@
             <option value="2">2 personas</option>
             <option value="3">3 personas</option>
             <option value="4">4 personas</option>
-            <option value="5">5 personas</option>
-            <option value="6">6 personas</option>
           </select>
         </div>
         <div class="form-group">
@@ -1569,7 +1675,6 @@ const GIFTS = [
   { emoji: '💡', name: 'Lámpara de mimbre', desc: 'Portátil y solar, para crear una iluminación súper cálida.', link: 'https://www.fravega.com/p/lampara-usb-solar-portatil-led-2-5w-madera-670326/' },
   { emoji: '📺', name: 'Smart TV 43"', desc: 'Para nuestras noches de películas y obvio, para no perdernos ningún partido de River.', link: 'https://www.fravega.com/p/smart-tv-led-43-philips-43pfd6910-77-502789/' },
   { emoji: '🪔', name: 'Velador nórdico', desc: 'Un toque de luz tenue y diseño trípode para nuestros espacios.', link: 'https://www.fravega.com/p/velador-tripode-nordico--21190619/' },
-  { emoji: '📺', name: 'Rack para TV', desc: 'Un mueble moderno y negro que le da estructura al living.', link: 'https://www.fravega.com/p/rack-tv-mueble-para-televisor-moderno-negro-180-mts-rtv180-22601718/' },
   { emoji: '🔊', name: 'Barra de sonido', desc: 'Para que el living suene como un verdadero cine en casa.', link: 'https://www.fravega.com/p/barra-de-sonido-tv-soundbar-telefunken-polaris-700-bluetooth-aux-con-subwoofer-c-remoto-21194298/' },
   { emoji: '❄️', name: 'Aire acondicionado', desc: 'Portátil frío/calor, para estar cómodos en cualquier estación.', link: 'https://www.fravega.com/p/aire-acondicionado-portatil-philco-frio-calor-2200fg-2650w-22709553/' },
   { emoji: '🪞', name: 'Espejo redondo con luz', desc: 'Ideal para darle amplitud, luz y onda a nuestras paredes.', link: '' },
@@ -1641,20 +1746,39 @@ function openEnvelope() {
   wrapper.classList.add('opening');
   wrapper.onclick = null; // disable second click
 
+  // ── Arrancar música AQUÍ, dentro del click (sin setTimeout) ──
+  // El browser solo permite audio si viene de interacción directa del usuario
+  const audio   = document.getElementById('bg-music');
+  const musicBtn = document.getElementById('music-btn');
+  audio.volume = 0;
+  audio.play().then(() => {
+    musicBtn.classList.add('ready');
+    // Fade in volumen suavemente
+    let vol = 0;
+    const fadeIn = setInterval(() => {
+      vol = Math.min(vol + 0.015, 0.42);
+      audio.volume = vol;
+      if (vol >= 0.42) clearInterval(fadeIn);
+    }, 80);
+  }).catch((err) => {
+    console.warn('Audio bloqueado:', err);
+    // Igual mostrar el botón para que el usuario pueda activar manualmente
+    musicBtn.classList.add('ready');
+    musicBtn.classList.add('muted');
+    musicBtn.dataset.tooltip = 'Reproducir música';
+  });
+
   setTimeout(() => {
-    // Start white flash
     flash.classList.add('flash-in');
   }, 900);
 
   setTimeout(() => {
-    // Hide envelope, show invitation
     screen.classList.add('fade-out');
     invite.classList.add('visible');
     window.scrollTo(0, 0);
   }, 1400);
 
   setTimeout(() => {
-    // Remove flash
     flash.style.transition = 'opacity 1s ease';
     flash.classList.remove('flash-in');
   }, 1700);
@@ -1662,7 +1786,7 @@ function openEnvelope() {
   setTimeout(() => {
     screen.style.display = 'none';
     flash.style.display = 'none';
-    initReveal(); // start scroll animations
+    initReveal();
   }, 2200);
 }
 
@@ -1776,7 +1900,29 @@ document.getElementById('rsvp-attendance').addEventListener('change', function()
 });
 
 // ═══════════════════════════════════
-//  RSVP SUBMIT → WHATSAPP DIRECTO
+//  MUSIC TOGGLE
+// ═══════════════════════════════════
+function toggleMusic() {
+  const audio    = document.getElementById('bg-music');
+  const musicBtn = document.getElementById('music-btn');
+
+  if (audio.paused) {
+    audio.play();
+    audio.muted = false;
+    musicBtn.classList.remove('muted');
+    musicBtn.dataset.tooltip = 'Silenciar música';
+  } else if (audio.muted) {
+    audio.muted = false;
+    musicBtn.classList.remove('muted');
+    musicBtn.dataset.tooltip = 'Silenciar música';
+  } else {
+    audio.muted = true;
+    musicBtn.classList.add('muted');
+    musicBtn.dataset.tooltip = 'Reproducir música';
+  }
+}
+
+// ═══════════════════════════════════
 // ═══════════════════════════════════
 function submitRSVP(e) {
   e.preventDefault();
