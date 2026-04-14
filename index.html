@@ -1706,12 +1706,10 @@
   <!-- ─── Versículo ─── -->
   <section class="section-verse">
     <div class="verse-ornament reveal">"</div>
-    <p class="verse-ref reveal reveal-delay-1">Mateo 19:5–6</p>
+    <p class="verse-ref reveal reveal-delay-1">1 Pedro 4:8</p>
     <p class="verse-text reveal reveal-delay-2">
-      Por esto el hombre dejará a su padre y a su madre,<br>
-      y se unirá a su mujer, y los dos serán una sola carne.<br>
-      Así que ya no son dos, sino una sola carne;<br>
-      por tanto, lo que Dios juntó, no lo separe el hombre.
+      Y ante todo, tened entre vosotros ferviente amor;<br>
+      porque el amor cubrirá multitud de pecados.
     </p>
     <div class="verse-divider reveal reveal-delay-3"></div>
   </section>
@@ -1896,12 +1894,12 @@
       </div>
       <div class="bank-row">
         <span class="bank-key">Alias</span>
-        <span class="bank-val" id="alias-val">nazaygaby.boda</span>
+        <span class="bank-val" id="alias-val">AGOTE.GULA.SABLE</span>
         <button class="copy-btn" onclick="copyText('alias-val', this)">copiar</button>
       </div>
       <div class="bank-row">
         <span class="bank-key">CBU</span>
-        <span class="bank-val" id="cbu-val">0000003100012345678901</span>
+        <span class="bank-val" id="cbu-val">19100384-55003850553546</span>
         <button class="copy-btn" onclick="copyText('cbu-val', this)">copiar</button>
       </div>
     </div>
@@ -1917,7 +1915,7 @@
     <h2 class="section-heading reveal reveal-delay-1">Confirmá tu asistencia</h2>
     <div class="rsvp-deadline reveal reveal-delay-2">
       <span class="deadline-icon">📅</span>
-      <span>Confirmá antes del <strong>1 de mayo de 2026</strong></span>
+      <span>Confirmá <strong>antes del 1 de agosto</strong></span>
     </div>
 
     <div id="rsvp-form-container" class="rsvp-form">
@@ -1995,6 +1993,10 @@
       ⚠️ Las fotos se suben el día de la boda — por favor no subas nada antes del evento.
     </p>
 
+    <p class="fotos-warning reveal reveal-delay-4" style="margin-top:0.8rem; opacity:0.85;">
+      📲 El QR para acceder a la app lo vamos a estar entregando en la boda.
+    </p>
+
             <div class="fotos-qr-wrap reveal reveal-delay-4">
       <!-- QR y link se agregan después -->
     </div>
@@ -2036,42 +2038,37 @@ const CONFIG = {
   WA_NUMBER: '541169724950',
 
   // Alias / CBU (reemplazar con los reales)
-  ALIAS: 'nazaygaby.boda',
-  CBU:   '3840200500000004377708',
+  ALIAS: 'AGOTE.GULA.SABLE',
+  CBU:   '19100384-55003850553546',
 };
 
 // ═══════════════════════════════════
 //  LISTA DE REGALOS (datos de prueba)
 // ═══════════════════════════════════
 const GIFTS = [
-  { emoji: '♨️', name: 'Microondas negro', desc: 'Para calentar nuestras comidas de todos los días con mucho estilo.', link: 'https://www.fravega.com/p/microondas-enova-me2311-23-litros-negro-22617292/' },
-  { emoji: '🧂', name: 'Especiero giratorio', desc: 'Para darle el condimento exacto a nuestras mejores recetas.', link: 'https://www.fravega.com/p/especiero-cuadrado-de-acero-inox-12-frascos-base-giratoria-990275921/' },
-  { emoji: '🥣', name: 'Mixer negro', desc: 'Súper práctico para sopas, salsas y preparaciones rápidas.', link: 'https://www.fravega.com/p/minipimer-mixer-completa-c-batidor-y-procesador-color-negro-22470769/' },
-  { emoji: '🍷', name: 'Vasos copones', desc: 'Para brindar y celebrar con familia y amigos.', link: 'https://www.fravega.com/p/set-x-12-copas-copon-vaso-vidrio-sin-tallo-gourmet-rigolleau-990156381/' },
-  { emoji: '🛏️', name: 'Juego de sábanas', desc: 'Suavidad y confort color blanco para vestir nuestra cama.', link: '' },
+  { emoji: '♨️', name: 'Microondas negro', desc: 'Para calentar nuestras comidas de todos los días con mucho estilo.', link: 'https://www.mercadolibre.com.ar/microondas-samsung-ms23k3513ak-negro-23l/p/MLA19148888#reviews' },
+    { emoji: '🥣', name: 'Mixer negro', desc: 'Súper práctico para sopas, salsas y preparaciones rápidas.', link: 'https://www.mercadolibre.com.ar/mixer-ultracomb-lm-2555-minipimer-vaso-800ml-bowl-picador-color-negro/p/MLA29205496#reviews' },
+  { emoji: '🍷', name: 'Vasos copones', desc: 'Para brindar y celebrar con familia y amigos.', link: 'https://www.mercadolibre.com.ar/set-x-6-vasos-vidrio-copon-pinot-vino-o-agua--hermosos-/up/MLAU208224547#polycard_client=search-desktop&search_layout=grid&position=19&type=product&tracking_id=cec84727-061c-49d4-977c-1539fa0d9da6&wid=MLA667747787&sid=search' },
+  { emoji: '🛏️', name: 'Juego de sábanas', desc: 'Suavidad y confort color blanco para vestir nuestra cama.', link: 'https://www.mercadolibre.com.ar/juego-sabanas-2-plazas-600-hilos-extra-suave-premium-color-blanco-kl-portofino-knn-livet/p/MLA56463650?pdp_filters=item_id:MLA2392167128#is_advertising=true&searchVariation=MLA56463650&backend_model=search-backend&position=1&search_layout=grid&type=pad&tracking_id=30110568-b7fa-429b-80f8-1419fea7c0f8&ad_domain=VQCATCORE_LST&ad_position=1&ad_click_id=ZjE4NTI1ZjgtYjY5OC00MWQ4LTg0MDAtOWI2NzAyMGIzZGNi' },
   { emoji: '🤎', name: 'Cubrecama edredón', desc: 'En tono marrón para darle calidez y textura a nuestro dormitorio.', link: '' },
-  { emoji: '🪑', name: 'Mesita de luz', desc: 'El detalle perfecto en blanco y madera para el lado de la cama.', link: 'https://www.fravega.com/p/mesa-de-luz-flotante-blanco-desayunador-cajon-moderno-21280914/' },
+  { emoji: '🪑', name: 'Mesita de luz', desc: 'El detalle perfecto en blanco y madera para el lado de la cama.', link: 'https://www.mercadolibre.com.ar/mesa-de-luz-flotante-murano-ricchezze-1-cajon-45x32-cm-blanco-pino/p/MLA40689991#polycard_client=search-desktop&search_layout=grid&position=8&type=product&tracking_id=cb19260d-9e4f-4975-acbe-a51abc493e1b&wid=MLA1915916806&sid=search' },
   { emoji: '🛁', name: 'Set de toallas y toallones', desc: 'Para equipar nuestro baño con los colores que nos gustan.', link: '' },
-  { emoji: '🍽️', name: 'Secaplatos negro', desc: 'Diseño moderno y mucha practicidad para la mesada.', link: 'https://www.fravega.com/p/secaplatos-escurridor-nictom-ep01-negro-acero-20015107/' },
-  { emoji: '🧼', name: 'Set de baño', desc: 'Accesorios en negro y marrón que suman muchísimo estilo al baño.', link: 'https://www.fravega.com/p/set-de-bano-con-accesorios-6-pzas-negro-22485943/' },
-  { emoji: '🗑️', name: 'Set de tachos de metal', desc: 'Combos a pedal para mantener el orden y la limpieza a raya.', link: 'https://www.fravega.com/p/tacho-de-basura-pedal-nictom-30-lts-color-acero-21190996/' },
-  { emoji: '🍳', name: 'Batería de cocina', desc: 'Set completo de 12 piezas en gris oscuro para inspirarnos cocinando juntos.', link: 'https://www.fravega.com/p/bateria-de-cocina-taioor-12-piezas-gris-oscuro-662074/' },
-  { emoji: '🥄', name: 'Utensilios de silicona', desc: 'Herramientas ideales para cocinar sin rayar nuestras ollas nuevas.', link: 'https://www.fravega.com/p/set-utensillos-x-12-pzas-22626171/' },
-  { emoji: '🔪', name: 'Set de cuchillos', desc: 'Cuatro cuchillos de acero inoxidable para cortar y preparar como verdaderos profesionales.', link: 'https://www.fravega.com/p/set-de-4-cuchillos-hudson-linea-basic-acero-inoxidable-21249969/' },
-  { emoji: '🫙', name: 'Set de frascos herméticos', desc: 'Para organizar la alacena y que quede tan linda como funcional.', link: 'https://www.gamingcity.com.ar/bazar-frasco-hudson-hermetico-plastico-set-x5--det--16711' },
-  { emoji: '👕', name: 'Tender plegable', desc: 'El clásico vertical con rueditas, infaltable para el día a día.', link: 'https://www.fravega.com/p/tender-plegable-vertical-varillas-con-broches-ruedas-ropa-colgador-tendedero-de-pie-alas-21917640/' },
-  { emoji: '📺', name: 'Smart TV 43"', desc: 'Para nuestras noches de películas y obvio, para no perdernos ningún partido de River.', link: 'https://www.fravega.com/p/smart-tv-led-43-philips-43pfd6910-77-502789/' },
-  { emoji: '🔊', name: 'Barra de sonido', desc: 'Para que el living suene como un verdadero cine en casa.', link: 'https://www.fravega.com/p/barra-de-sonido-tv-soundbar-telefunken-polaris-700-bluetooth-aux-con-subwoofer-c-remoto-21194298/' },
-  { emoji: '❄️', name: 'Aire acondicionado', desc: 'Portátil frío/calor, para estar cómodos en cualquier estación del año.', link: 'https://www.fravega.com/p/aire-acondicionado-portatil-philco-frio-calor-2200fg-2650w-22709553/' },
+  { emoji: '🍽️', name: 'Secaplatos negro', desc: 'Diseño moderno y mucha practicidad para la mesada.', link: 'https://www.mercadolibre.com.ar/secaplatos-escurridor-de-platos-para-mesada-con-cubiertero-escurridor-cubiertos-agarradera-de-madera-secaplatos-moderno-seca-platos-vajilla-con-bandeja-color-negro-levys-bazar/p/MLA47727165#polycard_client=search-desktop&search_layout=grid&position=3&type=product&tracking_id=0bd38687-6561-49f7-97dc-b3ce720ef0eb&wid=MLA2470741478&sid=search' },
+  { emoji: '🧼', name: 'Set de baño', desc: 'Accesorios en negro y marrón que suman muchísimo estilo al baño.', link: 'https://articulo.mercadolibre.com.ar/MLA-1663075959-set-de-bano-city-blanco-bambu-6-piezas-rayado-_JM?searchVariation=196491017349#is_advertising=true&searchVariation=196491017349&backend_model=search-backend&position=4&search_layout=grid&type=pad&tracking_id=084e2746-4294-4752-94fa-8aebdd028d10&ad_domain=VQCATCORE_LST&ad_position=4&ad_click_id=MzEzMTAwM2QtMWFhMi00ZDlmLTgyNTQtNGM2NGNmM2Y1MjIw' },
+  { emoji: '🗑️', name: 'Set de tachos de metal', desc: 'Combos a pedal para mantener el orden y la limpieza a raya.', link: 'https://www.mercadolibre.com.ar/tacho-de-basura-acero-cesto-pack-x2-unideades-7-litro-sufin/up/MLAU3218434588#polycard_client=search-desktop&search_layout=grid&position=5&type=product&tracking_id=b3122f7a-162a-4004-860a-5cbd745fc918&wid=MLA1502281317&sid=search' },
+  { emoji: '🍳', name: 'Batería de cocina', desc: 'Set completo de 12 piezas en gris oscuro para inspirarnos cocinando juntos.', link: 'https://www.mercadolibre.com.ar/bateria-cocina-tramontina-linz-de-aluminio-x7-piezas-gris/up/MLAU3238213004#polycard_client=search-desktop&search_layout=grid&position=27&type=product&tracking_id=184bb83d-3fca-4067-9560-7ef4547231b3&wid=MLA2112559178&sid=search' },
+  { emoji: '🥄', name: 'Utensilios de silicona', desc: 'Herramientas ideales para cocinar sin rayar nuestras ollas nuevas.', link: 'https://www.mercadolibre.com.ar/set-x12-kit-utensilios-de-cocina-mango-madera-punta-silicona/up/MLAU3121899412?pdp_filters=item_id:MLA2050580048#is_advertising=true&searchVariation=MLAU3121899412&backend_model=search-backend&position=2&search_layout=grid&type=pad&tracking_id=7b433b41-8882-4c3f-8c7e-150c13463338&ad_domain=VQCATCORE_LST&ad_position=2&ad_click_id=NDU1MzVlMWYtOTQwMi00ZWNlLThjMWMtZTFkYjM2M2JkMzUw' },
+  { emoji: '🔪', name: 'Set de cuchillos', desc: 'Cuatro cuchillos de acero inoxidable para cortar y preparar como verdaderos profesionales.', link: 'https://www.mercadolibre.com.ar/hudson-basic-bsset04-4-cuchillos-acero-inoxidable-con-taco-soporte-color-negro/p/MLA35275468#polycard_client=search-desktop&search_layout=grid&position=41&type=product&tracking_id=49b0502d-8a62-4fa6-8a40-98406ff7738f&wid=MLA1532220609&sid=search' },
+  { emoji: '🫙', name: 'Set de frascos herméticos', desc: 'Para organizar la alacena y que quede tan linda como funcional.', link: 'https://www.mercadolibre.com.ar/set-de-7-contenedores-para-cocina-gadnic-tapa-hermetica-libre-bpa/p/MLA38523425?pdp_filters=item_id:MLA1491323967#is_advertising=true&searchVariation=MLA38523425&backend_model=search-backend&position=4&search_layout=grid&type=pad&tracking_id=c3d5a723-7349-4b9f-b84e-8ea03175a42a&ad_domain=VQCATCORE_LST&ad_position=4&ad_click_id=OTcyZTg2NmMtOGE4NC00OTViLWFkNDctYWQxZDlmY2IyZTQ1' },
+  { emoji: '👕', name: 'Tender plegable', desc: 'El clásico vertical con rueditas, infaltable para el día a día.', link: 'https://www.mercadolibre.com.ar/tender-de-ropa-vertical-3-niveles-plegable-con-ruedas/up/MLAU3867080267?pdp_filters=item_id:MLA3122089378#is_advertising=true&searchVariation=MLAU3867080267&backend_model=search-backend&position=26&search_layout=grid&type=pad&tracking_id=cb899367-35ef-4c12-9776-c0dc47fdb8b7&ad_domain=VQCATCORE_LST&ad_position=26&ad_click_id=MzdlMTRkYzEtYzc2ZC00YTU4LWJjNWQtNDNjNzk4YWJhNzlh' },
+    { emoji: '🔊', name: 'Barra de sonido', desc: 'Para que el living suene como un verdadero cine en casa.', link: 'https://www.mercadolibre.com.ar/barra-de-sonido-gadnic-bs1000-2en1-aux-bt-optical-80w-multi-conexion-aux-microsd-led-display/p/MLA16639317?pdp_filters=item_id:MLA933700744#reviews' },
+  { emoji: '❄️', name: 'Aire acondicionado', desc: 'Portátil frío/calor, para estar cómodos en cualquier estación del año.', link: 'https://www.mercadolibre.com.ar/aire-acondicionado-split-philco-inverter-3750w-frio-calor-a-phin37ha2an/p/MLA63226247#polycard_client=search-desktop&search_layout=grid&position=2&type=product&tracking_id=1930d44b-1049-4e3c-bfa2-89c13de2c01b&wid=MLA2794605308&sid=search' },
   { emoji: '🪞', name: 'Espejo redondo con luz LED', desc: 'Espejo decorativo con luz, ideal para darle amplitud y onda a nuestras paredes.', link: 'https://articulo.mercadolibre.com.ar/MLA-1150525163-espejo-led-pared-apto-bano-decorativo-redondo-moderno-80-cm-_JM' },
-  { emoji: '🥘', name: 'Olla Essen', desc: 'Un clásico argentino de calidad que nos va a acompañar toda la vida.', link: '' },
-  { emoji: '🧺', name: 'Cesto de mimbre', desc: 'Un canasto de bambú para mantener el diseño natural hasta en el lavadero.', link: 'https://www.fravega.com/p/canasto-rectangular-laundry-plegable-cesto-ropa-bambu-tapa-22718859/' },
-  { emoji: '💨', name: 'Ventilador de piso turbo', desc: 'Potente y silencioso, el salvavidas absoluto para los días de verano.', link: 'https://www.fravega.com/p/ventilador-de-piso-turbo-3-velocidades-eiffel-e-516-90w-40-cm-negro-negro-plastico-5-22713218/' },
-  { emoji: '🌈', name: 'Luz LED inteligente', desc: 'Barra magnética para darle distintas atmósferas y colores a nuestro setup.', link: 'https://www.fravega.com/p/barra-de-luz-led-magnetica-30cm-recargable-dinax-22699221/' },
-  { emoji: '🍲', name: 'Fuente de vidrio', desc: 'Set de asaderas de vidrio templado, perfectas para las comidas al horno.', link: 'https://www.fravega.com/p/set-x4-marinex-asadera-fuentes-clasicas-vidrio-templado-21500185/' },
-  { emoji: '🧥', name: 'Perchas de madera', desc: 'Para tener nuestro placard siempre ordenado y muy estético.', link: 'https://www.fravega.com/p/perchas-gadnic-x50-madera-antideslizante-990251534/' },
-  { emoji: '🍟', name: 'Freidora de aire', desc: 'Air fryer de 6.5 litros con panel digital táctil, para cocinar rico y saludable sin aceite.', link: 'https://www.mercadolibre.com.ar/freidora-de-aire-65-litros-air-fryer-panel-digital-tactil-sin-aceite-sin-humo-ni-olores-7-funciones-establecidas-manija-fria-pantalla-led-negra-kanji-home/p/MLA45259999' },
-  { emoji: '🍴', name: 'Set de cubiertos', desc: 'Box de 24 cubiertos Volf Focus para vestir nuestra mesa con estilo.', link: 'https://www.gamingcity.com.ar/bazar-box-24-cubiertos-volf-focus--det--16134' },
+    { emoji: '🧺', name: 'Cesto de mimbre', desc: 'Un canasto de bambú para mantener el diseño natural hasta en el lavadero.', link: 'https://www.mercadolibre.com.ar/cesto-plegable-bambu-marron-doble-con-tapa-60x40x63cm-divisiones/p/MLA47805980#polycard_client=search-desktop&search_layout=grid&position=2&type=product&tracking_id=19bccfce-6f72-4c9d-a217-ee51acd35364&wid=MLA1517922873&sid=search' },
+  { emoji: '💨', name: 'Ventilador de piso turbo', desc: 'Potente y silencioso, el salvavidas absoluto para los días de verano.', link: 'https://www.mercadolibre.com.ar/ventilador-de-piso-5-aspas-magiclick-turbo-chico-14-estructura-color-negro-3-velocidades/p/MLA60359524?pdp_filters=item_id:MLA2506605292#is_advertising=true&searchVariation=MLA60359524&backend_model=search-backend&position=3&search_layout=grid&type=pad&tracking_id=034372c9-3393-4fff-8a02-9f681f0ab544&ad_domain=VQCATCORE_LST&ad_position=3&ad_click_id=N2JhYmI1MDMtNDEzMS00ZDZjLWE0ODItMmVjMTQyNzAxZjk1' },
+  { emoji: '🌈', name: 'Luz LED inteligente', desc: 'Barra magnética para darle distintas atmósferas y colores a nuestro setup.', link: 'https://www.mercadolibre.com.ar/barra-luz-led-30-cm-usb-aluminio-recargable-con-sensor-de-movimiento-bajo-alacena-cocina-veoquiero/p/MLA46037227?pdp_filters=item_id:MLA2046748448#is_advertising=true&searchVariation=MLA46037227&backend_model=search-backend&position=2&search_layout=grid&type=pad&tracking_id=13b78dc0-941a-4921-9efa-6201c1033dde&ad_domain=VQCATCORE_LST&ad_position=2&ad_click_id=YTIyODY3MGYtNzM4OC00NDU0LThlZWEtNzJlODdlN2EyMGNi' },
+  { emoji: '🍲', name: 'Fuente de vidrio', desc: 'Set de asaderas de vidrio templado, perfectas para las comidas al horno.', link: 'https://www.mercadolibre.com.ar/set-juego-3-fuentes-asaderas-marinex-vidrio-rectangulares/up/MLAU363745996?pdp_filters=item_id:MLA2638147000#is_advertising=true&searchVariation=MLAU363745996&backend_model=search-backend&position=2&search_layout=grid&type=pad&tracking_id=f8c035e2-d86e-444e-8984-41674b048e2a&ad_domain=VQCATCORE_LST&ad_position=2&ad_click_id=ODAxZmNjMDAtMTg4OS00Yjg3LTgxZWUtYWQ2YjhmYTg4NmJh' },
+      { emoji: '🍴', name: 'Set de cubiertos', desc: 'Box de 24 cubiertos Volf Focus para vestir nuestra mesa con estilo.', link: 'https://www.gamingcity.com.ar/bazar-box-24-cubiertos-volf-focus--det--16134' },
 ];
 
 // ═══════════════════════════════════
