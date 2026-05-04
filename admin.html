@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Naza & Gaby</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f7f3ed; --cream-dark: #ede8df;
+    --olive: #7a8c5e; --olive-dark: #5a6845; --olive-light: #a3b080;
+    --earth: #9c7a5b; --earth-light: #c4a882;
+    --charcoal: #2d2d2a; --text-light: #6b6860; --white: #fff;
+    --danger: #c0392b; --danger-light: #e8d5d2;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charcoal); min-height:100vh; }
+
+  /* Header */
+  .admin-header {
+    background: var(--charcoal);
+    padding: 1.5rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top:0; z-index:100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  .admin-header-left { display:flex; align-items:center; gap:1rem; }
+  .admin-logo {
+    font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:300;
+    font-style:italic; color:var(--cream); letter-spacing:0.02em;
+  }
+  .admin-logo span { color:var(--olive-light); }
+  .admin-badge {
+    background: rgba(122,140,94,0.2); border:1px solid rgba(163,176,128,0.4);
+    color:var(--olive-light); padding:0.25rem 0.8rem; border-radius:100px;
+    font-size:0.65rem; font-weight:300; letter-spacing:0.2em; text-transform:uppercase;
+  }
+  .admin-back {
+    color: rgba(247,243,237,0.6); text-decoration:none; font-size:0.75rem;
+    font-weight:200; letter-spacing:0.15em; transition:color 0.2s;
+  }
+  .admin-back:hover { color:var(--cream); }
+
+  /* Stats */
+  .stats-bar {
+    display:flex; gap:1.5rem; padding:1.5rem 2rem;
+    background:var(--white); border-bottom:1px solid var(--cream-dark);
+    flex-wrap:wrap; align-items:center; justify-content:space-between;
+  }
+  .stats-group { display:flex; gap:1.5rem; flex-wrap:wrap; }
+  .stat {
+    display:flex; flex-direction:column; align-items:center; gap:0.2rem;
+    padding:0.5rem 1.2rem;
+  }
+  .stat-number {
+    font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:400;
+    color:var(--charcoal); line-height:1;
+  }
+  .stat-label {
+    font-size:0.62rem; font-weight:200; letter-spacing:0.25em;
+    text-transform:uppercase; color:var(--text-light);
+  }
+  .stat.gifted .stat-number { color:var(--olive); }
+  .stat.available .stat-number { color:var(--earth); }
+
+  .btn-add {
+    display:inline-flex; align-items:center; gap:0.6rem;
+    padding:0.75rem 1.8rem; background:var(--olive); color:white;
+    border:none; cursor:pointer; font-family:'Jost',sans-serif;
+    font-weight:300; font-size:0.78rem; letter-spacing:0.15em;
+    text-transform:uppercase; border-radius:2px; transition:all 0.3s;
+  }
+  .btn-add:hover { background:var(--olive-dark); transform:translateY(-1px); box-shadow:0 6px 18px rgba(90,104,69,0.3); }
+
+  /* Grid */
+  .gifts-admin-grid {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:1.2rem; padding:2rem; max-width:1200px; margin:0 auto;
+  }
+
+  /* Card */
+  .admin-card {
+    background:var(--white); border:1px solid var(--cream-dark); border-radius:3px;
+    overflow:hidden; transition:transform 0.3s, box-shadow 0.3s;
+    position:relative;
+  }
+  .admin-card:hover { transform:translateY(-3px); box-shadow:0 10px 30px rgba(0,0,0,0.07); }
+  .admin-card.is-gifted { opacity:0.55; filter:grayscale(0.5); }
+  .admin-card.is-gifted:hover { opacity:0.75; filter:grayscale(0.3); }
+
+  .card-top {
+    display:flex; align-items:center; gap:1rem; padding:1.2rem 1.2rem 0.8rem;
+  }
+  .card-emoji {
+    font-size:2.2rem; width:56px; height:56px; border-radius:50%;
+    background:var(--cream); display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .card-info { flex:1; min-width:0; }
+  .card-name {
+    font-family:'Cormorant Garamond',serif; font-size:1.15rem; font-weight:400;
+    color:var(--charcoal); margin-bottom:0.15rem;
+  }
+  .card-desc {
+    font-size:0.78rem; font-weight:300; color:var(--text-light);
+    line-height:1.5; display:-webkit-box; -webkit-line-clamp:2;
+    -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .card-link {
+    padding:0 1.2rem; margin-top:0.3rem;
+  }
+  .card-link a {
+    font-size:0.68rem; color:var(--olive); text-decoration:none;
+    font-weight:300; letter-spacing:0.05em;
+  }
+  .card-link a:hover { text-decoration:underline; }
+  .card-link .no-link { font-size:0.68rem; color:var(--text-light); font-style:italic; font-weight:200; }
+
+  .card-actions {
+    display:flex; gap:0.5rem; padding:0.8rem 1.2rem;
+    border-top:1px solid var(--cream-dark); margin-top:0.6rem;
+  }
+  .btn-toggle {
+    flex:1; padding:0.6rem; border:1px solid var(--olive-light); background:transparent;
+    color:var(--olive-dark); cursor:pointer; font-family:'Jost',sans-serif;
+    font-weight:300; font-size:0.72rem; letter-spacing:0.1em;
+    text-transform:uppercase; border-radius:2px; transition:all 0.25s;
+  }
+  .btn-toggle:hover { background:var(--olive); color:white; }
+  .btn-toggle.active { background:var(--olive); color:white; border-color:var(--olive); }
+  .btn-toggle.active:hover { background:var(--olive-dark); }
+
+  .btn-delete {
+    padding:0.6rem 1rem; border:1px solid var(--danger-light); background:transparent;
+    color:var(--danger); cursor:pointer; font-family:'Jost',sans-serif;
+    font-weight:300; font-size:0.72rem; letter-spacing:0.1em;
+    text-transform:uppercase; border-radius:2px; transition:all 0.25s;
+  }
+  .btn-delete:hover { background:var(--danger); color:white; border-color:var(--danger); }
+
+  /* Gifted badge */
+  .gifted-badge {
+    position:absolute; top:12px; right:12px;
+    background:var(--olive); color:white; padding:0.2rem 0.7rem;
+    font-size:0.6rem; font-weight:300; letter-spacing:0.15em;
+    text-transform:uppercase; border-radius:100px;
+  }
+
+  /* Modal */
+  .modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:200;
+    display:none; align-items:center; justify-content:center;
+    backdrop-filter:blur(4px); animation:fadeIn 0.3s ease;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal-box {
+    background:var(--cream); border-radius:4px; width:min(480px,92vw);
+    box-shadow:0 24px 60px rgba(0,0,0,0.2); animation:slideUp 0.35s ease;
+    max-height:90vh; overflow-y:auto;
+  }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+  .modal-head {
+    padding:1.5rem 1.8rem; border-bottom:1px solid var(--cream-dark);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .modal-head h3 {
+    font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:300;
+  }
+  .modal-close-btn {
+    background:none; border:1px solid var(--cream-dark); width:32px; height:32px;
+    border-radius:50%; cursor:pointer; font-size:1rem; color:var(--text-light);
+    display:flex; align-items:center; justify-content:center; transition:all 0.2s;
+  }
+  .modal-close-btn:hover { border-color:var(--charcoal); color:var(--charcoal); }
+
+  .modal-form { padding:1.8rem; display:flex; flex-direction:column; gap:1rem; }
+  .field label {
+    display:block; font-weight:200; font-size:0.68rem; letter-spacing:0.25em;
+    text-transform:uppercase; color:var(--text-light); margin-bottom:0.4rem;
+  }
+  .field input, .field textarea {
+    width:100%; padding:0.75rem 0.9rem; border:1px solid var(--cream-dark);
+    border-radius:2px; background:var(--white); font-family:'Jost',sans-serif;
+    font-weight:300; font-size:0.85rem; color:var(--charcoal);
+    outline:none; transition:border-color 0.2s;
+  }
+  .field input:focus, .field textarea:focus { border-color:var(--olive); }
+  .field textarea { resize:vertical; min-height:70px; }
+
+  .modal-actions { padding:0 1.8rem 1.8rem; display:flex; gap:0.8rem; }
+  .btn-save {
+    flex:1; padding:0.85rem; background:var(--olive); color:white; border:none;
+    cursor:pointer; font-family:'Jost',sans-serif; font-weight:300;
+    font-size:0.8rem; letter-spacing:0.2em; text-transform:uppercase;
+    border-radius:2px; transition:all 0.3s;
+  }
+  .btn-save:hover { background:var(--olive-dark); }
+  .btn-cancel {
+    padding:0.85rem 1.5rem; background:transparent; border:1px solid var(--cream-dark);
+    color:var(--text-light); cursor:pointer; font-family:'Jost',sans-serif;
+    font-weight:300; font-size:0.8rem; letter-spacing:0.15em;
+    text-transform:uppercase; border-radius:2px; transition:all 0.2s;
+  }
+  .btn-cancel:hover { border-color:var(--charcoal); color:var(--charcoal); }
+
+  /* Toast */
+  .toast {
+    position:fixed; bottom:2rem; right:2rem; z-index:300;
+    background:var(--charcoal); color:var(--cream); padding:0.9rem 1.6rem;
+    border-radius:3px; font-size:0.82rem; font-weight:300;
+    box-shadow:0 8px 24px rgba(0,0,0,0.2); transform:translateY(100px);
+    opacity:0; transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+    letter-spacing:0.05em;
+  }
+  .toast.show { transform:translateY(0); opacity:1; }
+  .toast.error { background:var(--danger); }
+
+  .empty-state {
+    grid-column:1/-1; text-align:center; padding:4rem 2rem;
+    color:var(--text-light); font-weight:200; font-size:0.9rem;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { flex-direction:column; align-items:stretch; gap:1rem; }
+    .stats-group { justify-content:center; }
+    .gifts-admin-grid { grid-template-columns:1fr; padding:1rem; }
+    .admin-header { flex-direction:column; gap:0.8rem; text-align:center; }
+  }
+</style>
+</head>
+<body>
+
+<header class="admin-header">
+  <div class="admin-header-left">
+    <span class="admin-logo">Naza <span>&</span> Gaby</span>
+    <span class="admin-badge">Admin</span>
+  </div>
+  <a href="/" class="admin-back">← Volver a la invitación</a>
+</header>
+
+<div class="stats-bar">
+  <div class="stats-group">
+    <div class="stat">
+      <span class="stat-number" id="stat-total">0</span>
+      <span class="stat-label">Total</span>
+    </div>
+    <div class="stat gifted">
+      <span class="stat-number" id="stat-gifted">0</span>
+      <span class="stat-label">Regalados</span>
+    </div>
+    <div class="stat available">
+      <span class="stat-number" id="stat-available">0</span>
+      <span class="stat-label">Disponibles</span>
+    </div>
+  </div>
+  <button class="btn-add" onclick="openAddModal()">+ Agregar regalo</button>
+</div>
+
+<div class="gifts-admin-grid" id="admin-grid"></div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="modal-title">Agregar regalo</h3>
+      <button class="modal-close-btn" onclick="closeAddModal()">✕</button>
+    </div>
+    <div class="modal-form">
+      <div class="field">
+        <label>Emoji</label>
+        <input type="text" id="f-emoji" placeholder="🎁" maxlength="4">
+      </div>
+      <div class="field">
+        <label>Nombre</label>
+        <input type="text" id="f-name" placeholder="Nombre del regalo">
+      </div>
+      <div class="field">
+        <label>Descripción</label>
+        <textarea id="f-desc" placeholder="Breve descripción"></textarea>
+      </div>
+      <div class="field">
+        <label>Link (opcional)</label>
+        <input type="url" id="f-link" placeholder="https://...">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeAddModal()">Cancelar</button>
+      <button class="btn-save" id="btn-save" onclick="saveGift()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let gifts = [];
+
+// ─── API helpers ───
+async function fetchGifts() {
+  const res = await fetch('/api/gifts');
+  gifts = await res.json();
+  renderGifts();
+  updateStats();
+}
+
+function updateStats() {
+  const gifted = gifts.filter(g => g.gifted).length;
+  document.getElementById('stat-total').textContent = gifts.length;
+  document.getElementById('stat-gifted').textContent = gifted;
+  document.getElementById('stat-available').textContent = gifts.length - gifted;
+}
+
+function renderGifts() {
+  const grid = document.getElementById('admin-grid');
+  if (gifts.length === 0) {
+    grid.innerHTML = '<div class="empty-state">No hay regalos todavía. ¡Agregá el primero!</div>';
+    return;
+  }
+  grid.innerHTML = gifts.map(g => `
+    <div class="admin-card ${g.gifted ? 'is-gifted' : ''}" data-id="${g._id}">
+      ${g.gifted ? '<span class="gifted-badge">✓ Regalado</span>' : ''}
+      <div class="card-top">
+        <div class="card-emoji">${g.emoji}</div>
+        <div class="card-info">
+          <div class="card-name">${esc(g.name)}</div>
+          <div class="card-desc">${esc(g.desc)}</div>
+        </div>
+      </div>
+      <div class="card-link">
+        ${g.link ? `<a href="${esc(g.link)}" target="_blank">🔗 Ver link</a>` : '<span class="no-link">Sin link</span>'}
+      </div>
+      <div class="card-actions">
+        <button class="btn-toggle ${g.gifted ? 'active' : ''}" onclick="toggleGifted('${g._id}', ${!g.gifted})">
+          ${g.gifted ? '↩ Desmarcar' : '🎁 Marcar regalado'}
+        </button>
+        <button class="btn-delete" onclick="deleteGift('${g._id}', '${esc(g.name)}')">✕ Eliminar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+async function toggleGifted(id, newState) {
+  try {
+    await fetch(`/api/gifts/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ gifted: newState })
+    });
+    showToast(newState ? '✓ Marcado como regalado' : '↩ Desmarcado');
+    fetchGifts();
+  } catch (e) { showToast('Error al actualizar', true); }
+}
+
+async function deleteGift(id, name) {
+  if (!confirm(`¿Eliminar "${name}"? Esta acción no se puede deshacer.`)) return;
+  try {
+    await fetch(`/api/gifts/${id}`, { method: 'DELETE' });
+    showToast('🗑️ Regalo eliminado');
+    fetchGifts();
+  } catch (e) { showToast('Error al eliminar', true); }
+}
+
+// ─── Add modal ───
+function openAddModal() {
+  document.getElementById('add-modal').classList.add('open');
+  document.getElementById('f-emoji').focus();
+}
+
+function closeAddModal() {
+  document.getElementById('add-modal').classList.remove('open');
+  ['f-emoji','f-name','f-desc','f-link'].forEach(id => document.getElementById(id).value = '');
+}
+
+async function saveGift() {
+  const emoji = document.getElementById('f-emoji').value.trim();
+  const name = document.getElementById('f-name').value.trim();
+  const desc = document.getElementById('f-desc').value.trim();
+  const link = document.getElementById('f-link').value.trim();
+
+  if (!emoji || !name || !desc) {
+    showToast('Completá emoji, nombre y descripción', true);
+    return;
+  }
+
+  try {
+    await fetch('/api/gifts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ emoji, name, desc, link })
+    });
+    showToast('✓ Regalo agregado');
+    closeAddModal();
+    fetchGifts();
+  } catch (e) { showToast('Error al guardar', true); }
+}
+
+// ─── Toast ───
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' error' : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.className = 'toast', 2500);
+}
+
+// ─── Init ───
+fetchGifts();
+</script>
+</body>
+</html>

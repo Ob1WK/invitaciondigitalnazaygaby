@@ -1,0 +1,8 @@
+{
+  "name": "invitacion-naza-gaby",
+  "version": "1.0.0",
+  "description": "Invitación digital Naza & Gaby",
+  "dependencies": {
+    "mongodb": "^6.12.0"
+  }
+}
