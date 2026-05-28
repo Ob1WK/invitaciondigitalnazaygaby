@@ -626,64 +626,7 @@
       line-height: 1;
     }
 
-    /* ─── DRESSCODE gradient bar ─── */
-    .dresscode-gradient-bar {
-      width: min(320px, 85vw);
-      height: 52px;
-      border-radius: 100px;
-      margin: 0 auto 1.2rem;
-      background: linear-gradient(to right,
-          #3d5228,
-          #5a6e3a,
-          #7a8c5e,
-          #a3b080,
-          #c4b99a,
-          #9c7a5b,
-          #7a5c40,
-          #2d2d2a);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    }
 
-    .dresscode-gradient-labels {
-      display: flex;
-      justify-content: space-between;
-      width: min(320px, 85vw);
-      margin: 0 auto;
-      padding: 0 4px;
-    }
-
-    .dresscode-gradient-labels span {
-      font-family: 'Jost', sans-serif;
-      font-weight: 200;
-      font-size: 0.55rem;
-      letter-spacing: 0.05em;
-      color: var(--text-light);
-      text-align: center;
-    }
-
-    /* ─── DRESSCODE overlapping circles (new) ─── */
-    .dresscode-overlap-circles {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-      max-width: 340px;
-      margin: 0.5rem auto 0;
-      row-gap: 6px;
-    }
-
-    .dresscode-overlap-circles .doc {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      margin-left: -14px;
-      box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.13);
-      flex-shrink: 0;
-    }
-
-    .dresscode-overlap-circles .doc:first-child {
-      margin-left: 0;
-    }
 
     /* ─── LOCATION ─── */
     .section-location {
@@ -880,57 +823,7 @@
       font-style: italic;
     }
 
-    .dresscode-swatches {
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-      margin-top: 0.5rem;
-    }
 
-    .dresscode-swatch {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.7rem;
-    }
-
-    .dresscode-swatch-circle {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
-      position: relative;
-    }
-
-    .dresscode-swatch-label {
-      font-family: 'Jost', sans-serif;
-      font-weight: 300;
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      color: var(--text-light);
-      text-transform: capitalize;
-    }
-
-    /* White swatch gets a dashed border and "novia" note */
-    .dresscode-swatch.swatch-white .dresscode-swatch-circle {
-      border: 1.5px dashed #c8bfb0;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    }
-
-    .swatch-note {
-      font-family: 'Jost', sans-serif;
-      font-weight: 200;
-      font-size: 0.6rem;
-      letter-spacing: 0.05em;
-      color: var(--earth);
-      font-style: italic;
-      margin-top: -0.3rem;
-      max-width: 72px;
-      text-align: center;
-      line-height: 1.3;
-    }
 
     /* Dresscode bottom notes */
     .dresscode-notes {
@@ -2033,15 +1926,7 @@
         <em>Nada demasiado formal, nada demasiado casual.</em>
       </p>
 
-      <div class="dresscode-swatches reveal reveal-delay-4">
-        <div class="dresscode-overlap-circles">
-          <div class="doc" style="background:#5a6e3a;" title="Oliva"></div>
-          <div class="doc" style="background:#a3b080;" title="Salvia"></div>
-          <div class="doc" style="background:#c4b99a;" title="Arena"></div>
-          <div class="doc" style="background:#9c7a5b;" title="Tierra"></div>
-          <div class="doc" style="background:#2d2d2a;" title="Carbón"></div>
-        </div>
-      </div>
+
 
       <p class="dresscode-note reveal" style="margin-top:1.4rem;">
         El blanco en mujeres queda reservado para la novia
