@@ -1183,6 +1183,20 @@
       background: var(--olive-dark);
     }
 
+    .gift-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .gift-whatsapp {
+      background: #25a55f;
+    }
+
+    .gift-whatsapp:hover {
+      background: #1d804a;
+    }
+
     .gift-link-disabled {
       display: inline-flex;
       align-items: center;
@@ -2360,6 +2374,11 @@
     // ═══════════════════════════════════
     //  GIFT MODAL
     // ═══════════════════════════════════
+    function giftWhatsAppUrl(link) {
+      const message = `Hola! Quiero regalarte: ${link}`;
+      return `https://wa.me/${CONFIG.WA_NUMBER}?text=${encodeURIComponent(message)}`;
+    }
+
     async function buildGiftGrid() {
       const grid = document.getElementById('gifts-grid');
       try {
@@ -2376,7 +2395,10 @@
           ${g.gifted
             ? `<span class="gift-link-disabled">✓ Ya regalado</span>`
             : g.link
-              ? `<a href="${g.link}" target="_blank" class="gift-link">Ver en tienda →</a>`
+              ? `<div class="gift-actions">
+                  <a href="${g.link}" target="_blank" rel="noopener noreferrer" class="gift-link">Ver en tienda →</a>
+                  <a href="${giftWhatsAppUrl(g.link)}" target="_blank" rel="noopener noreferrer" class="gift-link gift-whatsapp">Quiero regalarlo</a>
+                </div>`
               : `<span class="gift-link-disabled">Próximamente</span>`
           }
         </div>
