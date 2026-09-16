@@ -130,6 +130,14 @@
   .btn-toggle.active { background:var(--olive); color:white; border-color:var(--olive); }
   .btn-toggle.active:hover { background:var(--olive-dark); }
 
+  .btn-edit {
+    padding:0.6rem 1rem; border:1px solid var(--earth-light); background:transparent;
+    color:var(--earth); cursor:pointer; font-family:'Jost',sans-serif;
+    font-weight:300; font-size:0.72rem; letter-spacing:0.1em;
+    text-transform:uppercase; border-radius:2px; transition:all 0.25s;
+  }
+  .btn-edit:hover { background:var(--earth); color:white; border-color:var(--earth); }
+
   .btn-delete {
     padding:0.6rem 1rem; border:1px solid var(--danger-light); background:transparent;
     color:var(--danger); cursor:pointer; font-family:'Jost',sans-serif;
@@ -296,6 +304,7 @@
 
 <script>
 let gifts = [];
+let editingId = null;
 
 // ─── API helpers ───
 async function fetchGifts() {
@@ -335,6 +344,7 @@ function renderGifts() {
         <button class="btn-toggle ${g.gifted ? 'active' : ''}" onclick="toggleGifted('${g._id}', ${!g.gifted})">
           ${g.gifted ? '↩ Desmarcar' : '🎁 Marcar regalado'}
         </button>
+        <button class="btn-edit" onclick="openEditModal('${g._id}')">✎ Editar</button>
         <button class="btn-delete" onclick="deleteGift('${g._id}', '${esc(g.name)}')">✕ Eliminar</button>
       </div>
     </div>
@@ -370,12 +380,33 @@ async function deleteGift(id, name) {
 
 // ─── Add modal ───
 function openAddModal() {
+  editingId = null;
+  document.getElementById('modal-title').textContent = 'Agregar regalo';
+  document.getElementById('btn-save').textContent = 'Guardar';
   document.getElementById('add-modal').classList.add('open');
   document.getElementById('f-emoji').focus();
 }
 
+function openEditModal(id) {
+  const gift = gifts.find(g => g._id === id);
+  if (!gift) return;
+
+  editingId = id;
+  document.getElementById('modal-title').textContent = 'Editar regalo';
+  document.getElementById('btn-save').textContent = 'Guardar cambios';
+  document.getElementById('f-emoji').value = gift.emoji;
+  document.getElementById('f-name').value = gift.name;
+  document.getElementById('f-desc').value = gift.desc;
+  document.getElementById('f-link').value = gift.link || '';
+  document.getElementById('add-modal').classList.add('open');
+  document.getElementById('f-link').focus();
+}
+
 function closeAddModal() {
   document.getElementById('add-modal').classList.remove('open');
+  editingId = null;
+  document.getElementById('modal-title').textContent = 'Agregar regalo';
+  document.getElementById('btn-save').textContent = 'Guardar';
   ['f-emoji','f-name','f-desc','f-link'].forEach(id => document.getElementById(id).value = '');
 }
 
@@ -391,12 +422,14 @@ async function saveGift() {
   }
 
   try {
-    await fetch('/api/gifts', {
-      method: 'POST',
+    const id = editingId;
+    const isEditing = Boolean(id);
+    await fetch(isEditing ? `/api/gifts/${id}` : '/api/gifts', {
+      method: isEditing ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ emoji, name, desc, link })
     });
-    showToast('✓ Regalo agregado');
+    showToast(isEditing ? '✓ Regalo actualizado' : '✓ Regalo agregado');
     closeAddModal();
     fetchGifts();
   } catch (e) { showToast('Error al guardar', true); }
